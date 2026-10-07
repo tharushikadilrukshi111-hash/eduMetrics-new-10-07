@@ -19,3 +19,6 @@ mongoose.connect(MONGO_URI)
     });
   })
   .catch((err) => console.log('Database connection error: ', err));
+
+  const authRoutes = require('./routes/authRoutes');
+app.use('/api/auth', authRoutes);
