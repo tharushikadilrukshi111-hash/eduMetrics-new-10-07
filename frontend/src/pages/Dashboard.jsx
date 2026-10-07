@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { BookOpen, Award, LogOut, PlusCircle, Trash2, User } from 'lucide-react';
+import { BookOpen, Award, LogOut, PlusCircle, Trash2, User, BarChart2 } from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -90,6 +91,13 @@ export default function Dashboard() {
     return totalCredits === 0 ? '0.00' : (totalPoints / totalCredits).toFixed(2);
   };
 
+  // Prepare chart data
+  const chartData = courses.map(c => ({
+    code: c.code,
+    gradePoint: c.gradePoint,
+    credits: c.credits
+  }));
+
   return (
     <div className="min-h-screen bg-slate-50">
       {/* Navbar */}
@@ -147,6 +155,27 @@ export default function Dashboard() {
             </div>
           </div>
         </div>
+
+        {/* Analytics Chart Section */}
+        {courses.length > 0 && (
+          <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6 mb-8">
+            <div className="flex items-center space-x-2 mb-6">
+              <BarChart2 className="text-blue-600" size={22} />
+              <h3 className="text-xl font-bold text-slate-800">Course Grade Points Analytics</h3>
+            </div>
+            <div className="h-72 w-full">
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={chartData}>
+                  <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
+                  <XAxis dataKey="code" stroke="#64748b" />
+                  <YAxis domain={[0, 4]} stroke="#64748b" />
+                  <Tooltip />
+                  <Bar dataKey="gradePoint" fill="#2563eb" radius={[6, 6, 0, 0]} />
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        )}
 
         {/* Courses Section */}
         <div className="bg-white rounded-2xl shadow-sm border border-slate-100 p-6">
