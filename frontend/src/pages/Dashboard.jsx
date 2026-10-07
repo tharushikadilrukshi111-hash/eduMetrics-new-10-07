@@ -94,6 +94,21 @@ export default function Dashboard() {
     credits: c.credits
   }));
 
+  //greeting based on time of day
+  const getGreeting = () => {
+  const hour = new Date().getHours();
+  if (hour >= 5 && hour < 12) {
+    return "Good Morning";
+  } else if (hour >= 12 && hour < 17) {
+    return "Good Afternoon";
+  } else if (hour >= 17 && hour < 21) {
+    return "Good Evening";
+  } else {
+    return "Good Night";
+  }
+};
+
+
   return (
     <div className="min-h-screen bg-[#070F22] text-slate-100 flex">
       {/* Left Sidebar Component */}
@@ -105,7 +120,9 @@ export default function Dashboard() {
         {/* Top Header Bar */}
         <header className="bg-[#0B132B]/80 backdrop-blur-xl border-b border-slate-800/80 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40">
           <div>
-            <h1 className="text-lg font-bold text-white">Good Evening, {user?.name?.split(' ')[0] || 'Student'}! 👋</h1>
+            <h1 className="text-lg font-bold text-white">
+                 {getGreeting()}, {user?.name?.split(' ')[0] || 'Student'}! 👋
+            </h1>
             <p className="text-xs text-slate-400">Here's your academic journey at a glance.</p>
           </div>
           
