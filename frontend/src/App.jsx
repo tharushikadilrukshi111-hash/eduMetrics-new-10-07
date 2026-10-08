@@ -4,7 +4,10 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
-import Courses from './pages/Courses'; // 1. Courses page eka import karanna
+import Courses from './pages/Courses'; 
+import Analytics from './pages/Analytics';
+import Calculator from './pages/Calculator';
+
 
 function App() {
   return (
@@ -14,7 +17,9 @@ function App() {
         <Route path="/register" element={<Register />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
-        <Route path="/courses" element={<Courses />} /> {/* 2. Courses route eka add karanna */}
+        <Route path="/courses" element={<Courses />} /> 
+        <Route path="/analytics" element={<Analytics />} /> 
+         <Route path="/calculator" element={<Calculator />} /> 
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
