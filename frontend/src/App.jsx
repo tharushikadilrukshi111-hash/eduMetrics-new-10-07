@@ -7,7 +7,8 @@ import Profile from './pages/Profile';
 import Courses from './pages/Courses'; 
 import Analytics from './pages/Analytics';
 import Calculator from './pages/Calculator';
-
+import Achievements from './pages/Achievements';
+import Notifications from './pages/Notifications';
 
 function App() {
   return (
@@ -20,6 +21,8 @@ function App() {
         <Route path="/courses" element={<Courses />} /> 
         <Route path="/analytics" element={<Analytics />} /> 
          <Route path="/calculator" element={<Calculator />} /> 
+        <Route path="/achievements" element={<Achievements />} />
+        <Route path="/notifications" element={<Notifications />} />
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </Router>
