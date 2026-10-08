@@ -4,21 +4,24 @@ const ThemeContext = createContext();
 
 export function ThemeProvider({ children }) {
   const [darkMode, setDarkMode] = useState(() => {
-    const saved = localStorage.getItem('eduMetricsDarkMode');
-    return saved !== null ? JSON.parse(saved) : true; // Default true (Dark Mode)
+    return localStorage.getItem('theme') === 'dark';
   });
 
   useEffect(() => {
-    localStorage.setItem('eduMetricsDarkMode', JSON.stringify(darkMode));
+    const root = document.documentElement;
     if (darkMode) {
-      document.documentElement.classList.add('dark');
+      root.classList.add('dark');
+      localStorage.setItem('theme', 'dark');
     } else {
-      document.documentElement.classList.remove('dark');
+      root.classList.remove('dark');
+      localStorage.setItem('theme', 'light');
     }
   }, [darkMode]);
 
+  const toggleDarkMode = () => setDarkMode(!darkMode);
+
   return (
-    <ThemeContext.Provider value={{ darkMode, setDarkMode }}>
+    <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>
       {children}
     </ThemeContext.Provider>
   );

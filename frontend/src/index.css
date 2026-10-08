@@ -2,60 +2,92 @@
 @tailwind components;
 @tailwind utilities;
 
-
-
-
 :root {
   --text: #6b6375;
   --text-h: #08060d;
-  --bg: #fff;
+  --bg: #F2F7FC;
   --border: #e5e4e7;
   --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow:
-    rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
-
-  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --heading: system-ui, 'Segoe UI', Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+  --accent: #5B8DEF;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow:
-      rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+/* --- BULLETPROOF GLOBAL DARK MODE OVERRIDES --- */
+html.dark, html.dark body {
+  background-color: #070F22 !important;
+  color: #f8fafc !important;
 }
+
+/* Force all white/light cards, headers, and sidebars to dark navy */
+html.dark .bg-white,
+html.dark [class*="bg-white"],
+html.dark header,
+html.dark aside,
+html.dark div[class*="bg-[#F2F7FC]"] {
+  background-color: #0b132b !important;
+  border-color: #1e293b !important;
+  color: #f8fafc !important;
+}
+
+/* Force inner secondary backgrounds to deep dark */
+html.dark .bg-\[\#F2F7FC\],
+html.dark [class*="bg-slate-50"],
+html.dark [class*="bg-slate-100"] {
+  background-color: #070F22 !important;
+  border-color: #1e293b !important;
+}
+
+/* Force all text elements to be clearly visible in dark mode */
+html.dark p, 
+html.dark span, 
+html.dark h1, 
+html.dark h2, 
+html.dark h3, 
+html.dark h4, 
+html.dark h5, 
+html.dark h6, 
+html.dark label,
+html.dark th,
+html.dark td,
+html.dark a {
+  color: #f8fafc !important;
+}
+
+/* Dim muted text properly so it doesn't clash */
+html.dark .text-slate-400,
+html.dark .text-slate-500, 
+html.dark .text-slate-600, 
+html.dark .text-slate-700,
+html.dark .text-slate-800,
+html.dark .text-\[\#173B63\] {
+  color: #94a3b8 !important;
+}
+
+/* Form inputs, dropdown selects & textareas */
+html.dark input, 
+html.dark select, 
+html.dark textarea {
+  background-color: #070F22 !important;
+  border-color: #334155 !important;
+  color: #ffffff !important;
+}
+
+html.dark input::placeholder {
+  color: #64748b !important;
+}
+
+/* Tables styling in dark mode */
+html.dark table {
+  border-color: #1e293b !important;
+}
+
+html.dark tr {
+  border-color: #1e293b !important;
+}
+
+html.dark tr:hover {
+  background-color: rgba(30, 41, 59, 0.5) !important;
+}
+/* ---------------------------------------------------- */
 
 body {
   margin: 0;
@@ -65,6 +97,7 @@ body {
   background-color: #F2F7FC;
   color: #173B63;
   font-family: system-ui, -apple-system, sans-serif;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 #root {
@@ -76,52 +109,60 @@ body {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
-  background-color: #f9d5e5;
-  color: #173B63;
+  background-color: transparent;
+  color: inherit;
 }
 
 h1,
 h2 {
-  font-family: var(--heading);
+  font-family: system-ui, sans-serif;
   font-weight: 500;
-  color: var(--text-h);
+  color: #173B63;
+}
+
+html.dark h1,
+html.dark h2 {
+  color: #ffffff !important;
 }
 
 h1 {
   font-size: 56px;
   letter-spacing: -1.68px;
   margin: 32px 0;
-  @media (max-width: 1024px) {
+}
+
+@media (max-width: 1024px) {
+  h1 {
     font-size: 36px;
     margin: 20px 0;
   }
+  h2 {
+    font-size: 20px;
+  }
 }
+
 h2 {
   font-size: 24px;
   line-height: 118%;
   letter-spacing: -0.24px;
   margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
 }
+
 p {
   margin: 0;
 }
 
 code,
 .counter {
-  font-family: var(--mono);
+  font-family: ui-monospace, Consolas, monospace;
   display: inline-flex;
   border-radius: 4px;
-  color: var(--text-h);
+  color: #173B63;
 }
 
 code {
   font-size: 15px;
   line-height: 135%;
   padding: 4px 8px;
-  background: var(--code-bg);
+  background: #f4f3ec;
 }
-
-

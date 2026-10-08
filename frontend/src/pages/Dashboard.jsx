@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { BookOpen, Award, PlusCircle, Trash2, User, BarChart2 } from 'lucide-react';
+import { BookOpen, Award, PlusCircle, Trash2, User, BarChart2, Moon, Sun } from 'lucide-react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
 import Sidebar from '../components/Sidebar';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Dashboard() {
   const [user, setUser] = useState(null);
@@ -21,6 +22,7 @@ export default function Dashboard() {
   const [error, setError] = useState('');
   const navigate = useNavigate();
 
+  const { darkMode, toggleDarkMode } = useTheme();
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -109,7 +111,7 @@ export default function Dashboard() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F7FC] text-[#173B63] flex">
+    <div className={`min-h-screen flex transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-[#F2F7FC] text-[#173B63]'}`}>
       {/* Left Sidebar Component */}
       <Sidebar />
 
@@ -117,18 +119,27 @@ export default function Dashboard() {
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Top Header Bar */}
-        <header className="bg-white/90 backdrop-blur-xl border-b border-[#5B8DEF]/20 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm">
+        <header className={`${darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-[#5B8DEF]/20'} backdrop-blur-xl border-b px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm transition-colors duration-300`}>
           <div>
-            <h1 className="text-lg font-bold text-[#173B63]">
+            <h1 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>
               {getGreeting()}, {user?.name?.split(' ')[0] || 'Student'}! 👋
             </h1>
-            <p className="text-xs text-slate-500">Here's your academic journey at a glance.</p>
+            <p className="text-xs text-slate-400">Here's your academic journey at a glance.</p>
           </div>
           
           <div className="flex items-center space-x-3">
+            {/* Dark Mode Toggle Button */}
+            <button
+              onClick={toggleDarkMode}
+              className={`p-2 rounded-xl border transition shadow-sm ${darkMode ? 'bg-slate-800 border-slate-700 text-amber-400 hover:bg-slate-700' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63] hover:bg-slate-100'}`}
+              title="Toggle Dark/Light Mode"
+            >
+              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+
             <button
               onClick={() => navigate('/profile')}
-              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
+              className={`flex items-center space-x-2 border px-3.5 py-1.5 rounded-xl transition shadow-sm text-sm font-medium ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63] hover:bg-slate-100'}`}
             >
               <User size={15} />
               <span>{user?.name || 'Student'}</span>
@@ -141,32 +152,32 @@ export default function Dashboard() {
           
           {/* Stats Row - Compact & Balanced */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm flex items-center justify-between">
+            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} p-5 rounded-2xl shadow-sm flex items-center justify-between transition-colors duration-300`}>
               <div>
-                <p className="text-xs font-medium text-slate-500">Cumulative GPA</p>
-                <h3 className="text-2xl font-extrabold text-[#5B8DEF] mt-0.5">{calculateGPA()}</h3>
+                <p className="text-xs font-medium text-slate-400">Cumulative GPA</p>
+                <h3 className={`text-2xl font-extrabold mt-0.5 ${darkMode ? 'text-blue-400' : 'text-[#5B8DEF]'}`}>{calculateGPA()}</h3>
               </div>
-              <div className="bg-[#5B8DEF]/10 border border-[#5B8DEF]/30 p-3 rounded-xl text-[#5B8DEF]">
+              <div className={`${darkMode ? 'bg-blue-950/60 border-blue-800/40 text-blue-400' : 'bg-[#5B8DEF]/10 border-[#5B8DEF]/30 text-[#5B8DEF]'} p-3 rounded-xl`}>
                 <Award size={24} />
               </div>
             </div>
 
-            <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm flex items-center justify-between">
+            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} p-5 rounded-2xl shadow-sm flex items-center justify-between transition-colors duration-300`}>
               <div>
-                <p className="text-xs font-medium text-slate-500">Total Courses Enrolled</p>
-                <h3 className="text-2xl font-extrabold text-[#173B63] mt-0.5">{courses.length}</h3>
+                <p className="text-xs font-medium text-slate-400">Total Courses Enrolled</p>
+                <h3 className={`text-2xl font-extrabold mt-0.5 ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>{courses.length}</h3>
               </div>
-              <div className="bg-[#48B8A6]/10 border border-[#48B8A6]/30 p-3 rounded-xl text-[#48B8A6]">
+              <div className={`${darkMode ? 'bg-emerald-950/60 border-emerald-800/40 text-emerald-400' : 'bg-[#48B8A6]/10 border-[#48B8A6]/30 text-[#48B8A6]'} p-3 rounded-xl`}>
                 <BookOpen size={24} />
               </div>
             </div>
 
-            <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm flex items-center justify-between">
+            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} p-5 rounded-2xl shadow-sm flex items-center justify-between transition-colors duration-300`}>
               <div>
-                <p className="text-xs font-medium text-slate-500">Academic Year / Sem</p>
-                <h3 className="text-base font-bold text-[#173B63] mt-0.5">Year {user?.year || 3} Sem {user?.semester || 1}</h3>
+                <p className="text-xs font-medium text-slate-400">Academic Year / Sem</p>
+                <h3 className={`text-base font-bold mt-0.5 ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>Year {user?.year || 3} Sem {user?.semester || 1}</h3>
               </div>
-              <div className="bg-[#AFA8E8]/20 border border-[#AFA8E8]/40 p-3 rounded-xl text-[#7c72d6]">
+              <div className={`${darkMode ? 'bg-purple-950/60 border-purple-800/40 text-purple-400' : 'bg-[#AFA8E8]/20 border-[#AFA8E8]/40 text-[#7c72d6]'} p-3 rounded-xl`}>
                 <User size={24} />
               </div>
             </div>
@@ -174,21 +185,28 @@ export default function Dashboard() {
 
           {/* Analytics Chart Section */}
           {courses.length > 0 && (
-            <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-5">
+            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} rounded-2xl shadow-sm p-5 transition-colors duration-300`}>
               <div className="flex items-center space-x-2 mb-4">
-                <BarChart2 className="text-[#5B8DEF]" size={18} />
-                <h3 className="text-base font-bold text-[#173B63]">Course Grade Points Analytics</h3>
+                <BarChart2 className={darkMode ? 'text-blue-400' : 'text-[#5B8DEF]'} size={18} />
+                <h3 className={`text-base font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>Course Grade Points Analytics</h3>
               </div>
               <div className="h-64 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F2F7FC" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? '#1e293b' : '#F2F7FC'} />
                     <XAxis dataKey="code" stroke="#64748b" fontSize={12} />
                     <YAxis domain={[0, 4]} stroke="#64748b" fontSize={12} />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: '#ffffff', borderColor: '#5B8DEF33', borderRadius: '0.75rem', color: '#173B63', fontSize: '12px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} 
+                      contentStyle={{ 
+                        backgroundColor: darkMode ? '#0f172a' : '#ffffff', 
+                        borderColor: darkMode ? '#334155' : '#5B8DEF33', 
+                        borderRadius: '0.75rem', 
+                        color: darkMode ? '#f8fafc' : '#173B63', 
+                        fontSize: '12px', 
+                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' 
+                      }} 
                     />
-                    <Bar dataKey="gradePoint" fill="#5B8DEF" radius={[4, 4, 0, 0]} />
+                    <Bar dataKey="gradePoint" fill={darkMode ? '#3b82f6' : '#5B8DEF'} radius={[4, 4, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>
@@ -196,9 +214,9 @@ export default function Dashboard() {
           )}
 
           {/* Courses Section */}
-          <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-5">
+          <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} rounded-2xl shadow-sm p-5 transition-colors duration-300`}>
             <div className="flex justify-between items-center mb-4">
-              <h3 className="text-base font-bold text-[#173B63]">Enrolled Courses & Grades</h3>
+              <h3 className={`text-base font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>Enrolled Courses & Grades</h3>
               <button
                 onClick={() => setShowModal(true)}
                 className="flex items-center space-x-1.5 bg-[#5B8DEF] hover:bg-[#4975d1] text-white font-medium px-3.5 py-2 rounded-xl shadow-sm transition text-xs"
@@ -209,12 +227,12 @@ export default function Dashboard() {
             </div>
 
             {courses.length === 0 ? (
-              <p className="text-slate-500 text-center py-6 text-sm">No courses added yet. Click 'Add Course' to start tracking your GPA.</p>
+              <p className="text-slate-400 text-center py-6 text-sm">No courses added yet. Click 'Add Course' to start tracking your GPA.</p>
             ) : (
               <div className="overflow-x-auto">
                 <table className="w-full text-left border-collapse text-sm">
                   <thead>
-                    <tr className="border-b border-[#5B8DEF]/20 text-slate-500 text-xs">
+                    <tr className={`border-b text-xs ${darkMode ? 'border-slate-800 text-slate-400' : 'border-[#5B8DEF]/20 text-slate-500'}`}>
                       <th className="py-2.5 px-3 font-semibold">Course Code</th>
                       <th className="py-2.5 px-3 font-semibold">Course Name</th>
                       <th className="py-2.5 px-3 font-semibold">Credits</th>
@@ -225,13 +243,13 @@ export default function Dashboard() {
                   </thead>
                   <tbody>
                     {courses.map((course) => (
-                      <tr key={course._id} className="border-b border-[#5B8DEF]/10 hover:bg-[#F2F7FC]/60 text-[#173B63]">
-                        <td className="py-3 px-3 font-semibold text-[#173B63]">{course.code}</td>
-                        <td className="py-3 px-3 text-slate-700">{course.name}</td>
-                        <td className="py-3 px-3 text-slate-700">{course.credits}</td>
+                      <tr key={course._id} className={`border-b transition-colors ${darkMode ? 'border-slate-800/50 hover:bg-slate-800/30 text-slate-300' : 'border-[#5B8DEF]/10 hover:bg-[#F2F7FC]/60 text-[#173B63]'}`}>
+                        <td className={`py-3 px-3 font-semibold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>{course.code}</td>
+                        <td className={`py-3 px-3 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>{course.name}</td>
+                        <td className={`py-3 px-3 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>{course.credits}</td>
                         <td className="py-3 px-3 font-bold text-[#5B8DEF]">{course.grade}</td>
                         <td className="py-3 px-3">
-                          <span className="bg-[#5B8DEF]/10 border border-[#5B8DEF]/30 text-[#5B8DEF] text-[11px] px-2.5 py-0.5 rounded-full font-medium">{course.category}</span>
+                          <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium ${darkMode ? 'bg-blue-950/80 text-blue-400 border border-blue-800/50' : 'bg-[#5B8DEF]/10 border border-[#5B8DEF]/30 text-[#5B8DEF]'}`}>{course.category}</span>
                         </td>
                         <td className="py-3 px-3 text-right">
                           <button
@@ -253,15 +271,15 @@ export default function Dashboard() {
 
       {/* Add Course Modal */}
       {showModal && (
-        <div className="fixed inset-0 bg-[#173B63]/40 backdrop-blur-sm flex items-center justify-center px-4 z-50">
-          <div className="bg-white border border-[#5B8DEF]/30 w-full max-w-md rounded-2xl p-6 shadow-xl">
-            <h3 className="text-lg font-bold text-[#173B63] mb-4">Add New Course</h3>
+        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center px-4 z-50">
+          <div className={`${darkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-[#5B8DEF]/30 text-[#173B63]'} w-full max-w-md rounded-2xl p-6 shadow-2xl`}>
+            <h3 className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>Add New Course</h3>
             {error && <div className="mb-4 bg-rose-50 border border-rose-200 text-rose-600 p-3 rounded-xl text-xs">{error}</div>}
             
             <form onSubmit={handleAddCourse} className="space-y-3.5 text-sm">
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">Course Code</label>
+                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Course Code</label>
                   <input
                     type="text"
                     name="code"
@@ -269,11 +287,11 @@ export default function Dashboard() {
                     value={formData.code}
                     onChange={handleChange}
                     placeholder="EE3101"
-                    className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-xl p-2 text-[#173B63] focus:outline-none focus:border-[#5B8DEF] text-xs"
+                    className={`w-full rounded-xl p-2 text-xs focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] focus:border-[#5B8DEF]'}`}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">Course Name</label>
+                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Course Name</label>
                   <input
                     type="text"
                     name="name"
@@ -281,14 +299,14 @@ export default function Dashboard() {
                     value={formData.name}
                     onChange={handleChange}
                     placeholder="Control Systems"
-                    className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-xl p-2 text-[#173B63] focus:outline-none focus:border-[#5B8DEF] text-xs"
+                    className={`w-full rounded-xl p-2 text-xs focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] focus:border-[#5B8DEF]'}`}
                   />
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">Credits</label>
+                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Credits</label>
                   <input
                     type="number"
                     name="credits"
@@ -297,56 +315,56 @@ export default function Dashboard() {
                     max={6}
                     value={formData.credits}
                     onChange={handleChange}
-                    className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-xl p-2 text-[#173B63] focus:outline-none focus:border-[#5B8DEF] text-xs"
+                    className={`w-full rounded-xl p-2 text-xs focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] focus:border-[#5B8DEF]'}`}
                   />
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">Grade</label>
+                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Grade</label>
                   <select
                     name="grade"
                     value={formData.grade}
                     onChange={handleChange}
-                    className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-xl p-2 text-[#173B63] font-bold focus:outline-none focus:border-[#5B8DEF] text-xs"
+                    className={`w-full rounded-xl p-2 text-xs font-bold focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#5B8DEF] focus:border-[#5B8DEF]'}`}
                   >
-                    <option value="A+" className="bg-white">A+</option>
-                    <option value="A" className="bg-white">A</option>
-                    <option value="A-" className="bg-white">A-</option>
-                    <option value="B+" className="bg-white">B+</option>
-                    <option value="B" className="bg-white">B</option>
-                    <option value="B-" className="bg-white">B-</option>
-                    <option value="C+" className="bg-white">C+</option>
-                    <option value="C" className="bg-white">C</option>
-                    <option value="C-" className="bg-white">C-</option>
-                    <option value="E" className="bg-white">E</option>
-                    <option value="F" className="bg-white">F</option>
+                    <option value="A+" className={darkMode ? 'bg-slate-900' : 'bg-white'}>A+</option>
+                    <option value="A" className={darkMode ? 'bg-slate-900' : 'bg-white'}>A</option>
+                    <option value="A-" className={darkMode ? 'bg-slate-900' : 'bg-white'}>A-</option>
+                    <option value="B+" className={darkMode ? 'bg-slate-900' : 'bg-white'}>B+</option>
+                    <option value="B" className={darkMode ? 'bg-slate-900' : 'bg-white'}>B</option>
+                    <option value="B-" className={darkMode ? 'bg-slate-900' : 'bg-white'}>B-</option>
+                    <option value="C+" className={darkMode ? 'bg-slate-900' : 'bg-white'}>C+</option>
+                    <option value="C" className={darkMode ? 'bg-slate-900' : 'bg-white'}>C</option>
+                    <option value="C-" className={darkMode ? 'bg-slate-900' : 'bg-white'}>C-</option>
+                    <option value="E" className={darkMode ? 'bg-slate-900' : 'bg-white'}>E</option>
+                    <option value="F" className={darkMode ? 'bg-slate-900' : 'bg-white'}>F</option>
                   </select>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">Category</label>
+                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Category</label>
                   <select
                     name="category"
                     value={formData.category}
                     onChange={handleChange}
-                    className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-xl p-2 text-[#173B63] focus:outline-none focus:border-[#5B8DEF] text-xs"
+                    className={`w-full rounded-xl p-2 text-xs focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] focus:border-[#5B8DEF]'}`}
                   >
-                    <option value="Core" className="bg-white">Core</option>
-                    <option value="Technical Electives" className="bg-white">Technical Electives</option>
-                    <option value="General" className="bg-white">General</option>
+                    <option value="Core" className={darkMode ? 'bg-slate-900' : 'bg-white'}>Core</option>
+                    <option value="Technical Electives" className={darkMode ? 'bg-slate-900' : 'bg-white'}>Technical Electives</option>
+                    <option value="General" className={darkMode ? 'bg-slate-900' : 'bg-white'}>General</option>
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-medium text-slate-600 mb-1">Semester</label>
+                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Semester</label>
                   <select
                     name="semester"
                     value={formData.semester}
                     onChange={handleChange}
-                    className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-xl p-2 text-[#173B63] focus:outline-none focus:border-[#5B8DEF] text-xs"
+                    className={`w-full rounded-xl p-2 text-xs focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] focus:border-[#5B8DEF]'}`}
                   >
-                    <option value={1} className="bg-white">Semester 1</option>
-                    <option value={2} className="bg-white">Semester 2</option>
+                    <option value={1} className={darkMode ? 'bg-slate-900' : 'bg-white'}>Semester 1</option>
+                    <option value={2} className={darkMode ? 'bg-slate-900' : 'bg-white'}>Semester 2</option>
                   </select>
                 </div>
               </div>
@@ -355,7 +373,7 @@ export default function Dashboard() {
                 <button
                   type="button"
                   onClick={() => setShowModal(false)}
-                  className="px-3.5 py-2 border border-slate-300 rounded-xl text-slate-600 hover:bg-slate-100 transition text-xs font-medium"
+                  className={`px-3.5 py-2 border rounded-xl transition text-xs font-medium ${darkMode ? 'border-slate-700 text-slate-300 hover:bg-slate-800' : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}
                 >
                   Cancel
                 </button>

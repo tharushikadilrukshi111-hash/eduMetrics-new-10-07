@@ -79,33 +79,7 @@ export default function Settings() {
 
           <form onSubmit={handleSaveSettings} className="space-y-6">
             
-            {/* Appearance & Theme Settings */}
-            <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-6">
-              <div className="flex items-center space-x-3 mb-5">
-                <div className="bg-[#5B8DEF]/10 border border-[#5B8DEF]/30 p-2.5 rounded-xl text-[#5B8DEF]">
-                  <Moon size={20} />
-                </div>
-                <div>
-                  <h3 className="text-base font-bold text-[#173B63]">Appearance & Theme</h3>
-                  <p className="text-xs text-slate-500">Professional SaaS Light Theme is currently active.</p>
-                </div>
-              </div>
-
-              <div className="space-y-4 max-w-xl">
-                <div className="flex items-center justify-between bg-[#F2F7FC] border border-[#5B8DEF]/20 p-4 rounded-xl">
-                  <div>
-                    <h4 className="text-xs font-bold text-[#173B63]">SaaS Clean Palette Mode</h4>
-                    <p className="text-[11px] text-slate-500">Enable soft blue background with navy highlights.</p>
-                  </div>
-                  <input 
-                    type="checkbox" 
-                    checked={darkMode} 
-                    onChange={(e) => setDarkMode(e.target.checked)}
-                    className="w-4 h-4 accent-[#5B8DEF] cursor-pointer" 
-                  />
-                </div>
-              </div>
-            </div>
+            
 
             {/* Notification Preferences */}
             <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-6">

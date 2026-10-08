@@ -11,6 +11,7 @@ import Achievements from './pages/Achievements';
 import Notifications from './pages/Notifications';
 import Settings from './pages/Settings';
 
+
 function App() {
   return (
     <Router>
