@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { Bell, CheckCircle2, AlertCircle, Info, Trash2, User, Trophy } from 'lucide-react';
+import { Bell, CheckCircle2, AlertCircle, Info, User } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 
 export default function Notifications() {
@@ -94,7 +94,7 @@ export default function Notifications() {
   const notifications = getAutoNotifications();
 
   return (
-    <div className="min-h-screen bg-[#070F22] text-slate-100 flex">
+    <div className="min-h-screen bg-[#F2F7FC] text-[#173B63] flex">
       {/* Left Sidebar */}
       <Sidebar />
 
@@ -102,19 +102,19 @@ export default function Notifications() {
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Top Header Bar */}
-        <header className="bg-[#0B132B]/80 backdrop-blur-xl border-b border-slate-800/80 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40">
+        <header className="bg-white/90 backdrop-blur-xl border-b border-[#5B8DEF]/20 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm">
           <div>
-            <h1 className="text-lg font-bold text-white">Notifications</h1>
-            <p className="text-xs text-slate-400">Automated system alerts and academic standing updates.</p>
+            <h1 className="text-lg font-bold text-[#173B63]">Notifications</h1>
+            <p className="text-xs text-slate-500">Automated system alerts and academic standing updates.</p>
           </div>
           
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate('/profile')}
-              className="flex items-center space-x-2 bg-[#131E3A] border border-slate-700/60 text-slate-200 px-3.5 py-1.5 rounded-xl hover:bg-slate-800 transition shadow-sm text-sm"
+              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
             >
               <User size={15} />
-              <span className="font-medium">{user?.name || 'Student'}</span>
+              <span>{user?.name || 'Student'}</span>
             </button>
           </div>
         </header>
@@ -122,15 +122,15 @@ export default function Notifications() {
         {/* Page Content */}
         <main className="p-6 md:p-8 max-w-5xl w-full mx-auto space-y-6">
           
-          <div className="bg-[#0B132B] border border-slate-800/80 rounded-2xl shadow-lg p-6">
+          <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-6">
             <div className="flex justify-between items-center mb-6">
               <div className="flex items-center space-x-3">
-                <div className="bg-blue-950/60 border border-blue-800/40 p-3 rounded-xl text-blue-400">
+                <div className="bg-[#5B8DEF]/10 border border-[#5B8DEF]/30 p-3 rounded-xl text-[#5B8DEF]">
                   <Bell size={22} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-white">Live System & Academic Alerts</h3>
-                  <p className="text-xs text-slate-400">Generated automatically based on your database records & GPA</p>
+                  <h3 className="text-base font-bold text-[#173B63]">Live System & Academic Alerts</h3>
+                  <p className="text-xs text-slate-500">Generated automatically based on your database records & GPA</p>
                 </div>
               </div>
             </div>
@@ -139,20 +139,20 @@ export default function Notifications() {
               {notifications.map((item) => (
                 <div 
                   key={item.id} 
-                  className="bg-[#070F22] border border-slate-800 rounded-xl p-4 flex items-start justify-between shadow-md transition-all"
+                  className="bg-[#F2F7FC] border border-[#5B8DEF]/20 rounded-xl p-4 flex items-start justify-between shadow-sm transition-all"
                 >
                   <div className="flex items-start space-x-3">
                     <div className="mt-0.5">
-                      {item.type === 'success' && <CheckCircle2 className="text-emerald-400" size={20} />}
-                      {item.type === 'info' && <Info className="text-blue-400" size={20} />}
-                      {item.type === 'alert' && <AlertCircle className="text-amber-400" size={20} />}
+                      {item.type === 'success' && <CheckCircle2 className="text-[#48B8A6]" size={20} />}
+                      {item.type === 'info' && <Info className="text-[#5B8DEF]" size={20} />}
+                      {item.type === 'alert' && <AlertCircle className="text-[#F5B860]" size={20} />}
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
-                        <h4 className="font-bold text-white text-sm">{item.title}</h4>
+                        <h4 className="font-bold text-[#173B63] text-sm">{item.title}</h4>
                       </div>
-                      <p className="text-xs text-slate-300 mt-1 leading-relaxed">{item.message}</p>
-                      <span className="text-[11px] text-slate-500 mt-2 block">{item.time}</span>
+                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">{item.message}</p>
+                      <span className="text-[11px] text-slate-400 mt-2 block">{item.time}</span>
                     </div>
                   </div>
                 </div>

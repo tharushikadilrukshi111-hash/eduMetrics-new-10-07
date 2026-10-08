@@ -23,11 +23,11 @@ export default function Sidebar() {
   };
 
   return (
-    <aside className="w-64 bg-[#0B132B] border-r border-slate-800/80 min-h-screen flex flex-col justify-between p-4 sticky top-0">
+    <aside className="w-64 bg-[#173B63] border-r border-[#5B8DEF]/20 min-h-screen flex flex-col justify-between p-4 sticky top-0 shadow-sm">
       <div>
         {/* Logo */}
         <div className="flex items-center space-x-3 px-3 py-4 mb-6">
-          <div className="bg-blue-600 text-white p-2 rounded-xl shadow-md">
+          <div className="bg-[#5B8DEF] text-white p-2 rounded-xl shadow-md">
             <BookOpen size={22} />
           </div>
           <span className="text-lg font-bold text-white tracking-wide">EduMetrics</span>
@@ -44,8 +44,8 @@ export default function Sidebar() {
                 onClick={() => navigate(item.path)}
                 className={`w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium transition text-sm ${
                   isActive
-                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-600/30'
-                    : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200'
+                    ? 'bg-[#5B8DEF] text-white shadow-md shadow-[#5B8DEF]/30'
+                    : 'text-[#AFA8E8] hover:bg-[#1f4a7c] hover:text-white'
                 }`}
               >
                 <Icon size={18} />
@@ -57,10 +57,10 @@ export default function Sidebar() {
       </div>
 
       {/* Logout button */}
-      <div className="pt-4 border-t border-slate-800/80">
+      <div className="pt-4 border-t border-[#5B8DEF]/20">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-red-400 hover:bg-red-950/40 transition text-sm"
+          className="w-full flex items-center space-x-3 px-4 py-3 rounded-xl font-medium text-rose-300 hover:bg-rose-950/40 transition text-sm"
         >
           <LogOut size={18} />
           <span>Logout</span>

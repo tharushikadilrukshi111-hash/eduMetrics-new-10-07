@@ -56,7 +56,7 @@ export default function Analytics() {
   }));
 
   return (
-    <div className="min-h-screen bg-[#070F22] text-slate-100 flex">
+    <div className="min-h-screen bg-[#F2F7FC] text-[#173B63] flex">
       {/* Left Sidebar */}
       <Sidebar />
 
@@ -64,19 +64,19 @@ export default function Analytics() {
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Top Header Bar */}
-        <header className="bg-[#0B132B]/80 backdrop-blur-xl border-b border-slate-800/80 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40">
+        <header className="bg-white/90 backdrop-blur-xl border-b border-[#5B8DEF]/20 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm">
           <div>
-            <h1 className="text-lg font-bold text-white">Academic Analytics</h1>
-            <p className="text-xs text-slate-400">Visualize your performance and progress.</p>
+            <h1 className="text-lg font-bold text-[#173B63]">Academic Analytics</h1>
+            <p className="text-xs text-slate-500">Visualize your performance and progress.</p>
           </div>
           
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate('/profile')}
-              className="flex items-center space-x-2 bg-[#131E3A] border border-slate-700/60 text-slate-200 px-3.5 py-1.5 rounded-xl hover:bg-slate-800 transition shadow-sm text-sm"
+              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
             >
               <User size={15} />
-              <span className="font-medium">{user?.name || 'Student'}</span>
+              <span>{user?.name || 'Student'}</span>
             </button>
           </div>
         </header>
@@ -86,36 +86,36 @@ export default function Analytics() {
           
           {/* Metrics Row */}
           <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="bg-[#0B132B] border border-slate-800/80 p-5 rounded-2xl shadow-lg">
-              <p className="text-xs font-medium text-slate-400">Overall GPA</p>
-              <h3 className="text-2xl font-extrabold text-blue-400 mt-1">{calculateGPA()}</h3>
-              <p className="text-[11px] text-slate-500 mt-1">Target: 3.80</p>
+            <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
+              <p className="text-xs font-medium text-slate-500">Overall GPA</p>
+              <h3 className="text-2xl font-extrabold text-[#5B8DEF] mt-1">{calculateGPA()}</h3>
+              <p className="text-[11px] text-slate-400 mt-1">Target: 3.80</p>
             </div>
 
-            <div className="bg-[#0B132B] border border-slate-800/80 p-5 rounded-2xl shadow-lg">
-              <p className="text-xs font-medium text-slate-400">Total Courses</p>
-              <h3 className="text-2xl font-extrabold text-white mt-1">{courses.length}</h3>
-              <p className="text-[11px] text-slate-500 mt-1">Active semester</p>
+            <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
+              <p className="text-xs font-medium text-slate-500">Total Courses</p>
+              <h3 className="text-2xl font-extrabold text-[#173B63] mt-1">{courses.length}</h3>
+              <p className="text-[11px] text-slate-400 mt-1">Active semester</p>
             </div>
 
-            <div className="bg-[#0B132B] border border-slate-800/80 p-5 rounded-2xl shadow-lg">
-              <p className="text-xs font-medium text-slate-400">Total Credits</p>
-              <h3 className="text-2xl font-extrabold text-emerald-400 mt-1">{totalCredits} / 120</h3>
-              <p className="text-[11px] text-slate-500 mt-1">Degree progress</p>
+            <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
+              <p className="text-xs font-medium text-slate-500">Total Credits</p>
+              <h3 className="text-2xl font-extrabold text-[#48B8A6] mt-1">{totalCredits} / 120</h3>
+              <p className="text-[11px] text-slate-400 mt-1">Degree progress</p>
             </div>
 
-            <div className="bg-[#0B132B] border border-slate-800/80 p-5 rounded-2xl shadow-lg">
-              <p className="text-xs font-medium text-slate-400">Attendance Rate</p>
-              <h3 className="text-2xl font-extrabold text-purple-400 mt-1">94%</h3>
-              <p className="text-[11px] text-slate-500 mt-1">Excellent standing</p>
+            <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
+              <p className="text-xs font-medium text-slate-500">Attendance Rate</p>
+              <h3 className="text-2xl font-extrabold text-[#AFA8E8] mt-1">94%</h3>
+              <p className="text-[11px] text-slate-400 mt-1">Excellent standing</p>
             </div>
           </div>
 
           {/* Bar Chart Analytics Section */}
-          <div className="bg-[#0B132B] border border-slate-800/80 rounded-2xl shadow-lg p-6">
+          <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-6">
             <div className="flex items-center space-x-2 mb-6">
-              <BarChart2 className="text-blue-400" size={20} />
-              <h3 className="text-base font-bold text-white">Subject Performance Breakdown</h3>
+              <BarChart2 className="text-[#5B8DEF]" size={20} />
+              <h3 className="text-base font-bold text-[#173B63]">Subject Performance Breakdown</h3>
             </div>
 
             {courses.length === 0 ? (
@@ -124,13 +124,13 @@ export default function Analytics() {
               <div className="h-80 w-full">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#131E3A" />
+                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#F2F7FC" />
                     <XAxis dataKey="code" stroke="#64748b" fontSize={12} />
                     <YAxis domain={[0, 4]} stroke="#64748b" fontSize={12} />
                     <Tooltip 
-                      contentStyle={{ backgroundColor: '#0B132B', borderColor: '#1E293B', borderRadius: '0.5rem', color: '#fff', fontSize: '12px' }} 
+                      contentStyle={{ backgroundColor: '#ffffff', borderColor: '#5B8DEF33', borderRadius: '0.75rem', color: '#173B63', fontSize: '12px', boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' }} 
                     />
-                    <Bar dataKey="gradePoint" fill="#3b82f6" radius={[6, 6, 0, 0]} />
+                    <Bar dataKey="gradePoint" fill="#5B8DEF" radius={[6, 6, 0, 0]} />
                   </BarChart>
                 </ResponsiveContainer>
               </div>

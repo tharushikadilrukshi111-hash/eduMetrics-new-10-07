@@ -59,7 +59,7 @@ export default function Achievements() {
       description: 'Achieve a Cumulative GPA of 3.5 or higher',
       icon: Trophy,
       unlocked: gpaNum >= 3.5,
-      color: 'text-amber-400 bg-amber-950/60 border-amber-800/40'
+      color: 'text-amber-500 bg-amber-500/10 border-amber-500/30'
     },
     {
       id: 2,
@@ -67,7 +67,7 @@ export default function Achievements() {
       description: 'Enrol and track your first 3 courses',
       icon: Star,
       unlocked: courses.length >= 3,
-      color: 'text-blue-400 bg-blue-950/60 border-blue-800/40'
+      color: 'text-[#5B8DEF] bg-[#5B8DEF]/10 border-[#5B8DEF]/30'
     },
     {
       id: 3,
@@ -75,17 +75,17 @@ export default function Achievements() {
       description: 'Maintain active course records and tracking',
       icon: CheckCircle,
       unlocked: courses.length > 0,
-      color: 'text-emerald-400 bg-emerald-950/60 border-emerald-800/40'
+      color: 'text-[#48B8A6] bg-[#48B8A6]/10 border-[#48B8A6]/30'
     }
   ];
 
   const recentHistory = [
-    { id: 1, action: 'Unlocked Badge: Consistent Learner', time: 'Recently', icon: CheckCircle, color: 'text-emerald-400' },
-    { id: 2, action: `Earned XP: +${courses.length * 150} Total Course Points`, time: 'Active Session', icon: Zap, color: 'text-blue-400' }
+    { id: 1, action: 'Unlocked Badge: Consistent Learner', time: 'Recently', icon: CheckCircle, color: 'text-[#48B8A6]' },
+    { id: 2, action: `Earned XP: +${courses.length * 150} Total Course Points`, time: 'Active Session', icon: Zap, color: 'text-[#5B8DEF]' }
   ];
 
   return (
-    <div className="min-h-screen bg-[#070F22] text-slate-100 flex">
+    <div className="min-h-screen bg-[#F2F7FC] text-[#173B63] flex">
       {/* Left Sidebar */}
       <Sidebar />
 
@@ -93,19 +93,19 @@ export default function Achievements() {
       <div className="flex-1 flex flex-col min-w-0">
         
         {/* Top Header Bar */}
-        <header className="bg-[#0B132B]/80 backdrop-blur-xl border-b border-slate-800/80 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40">
+        <header className="bg-white/90 backdrop-blur-xl border-b border-[#5B8DEF]/20 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm">
           <div>
-            <h1 className="text-lg font-bold text-white">Achievements & Milestones</h1>
-            <p className="text-xs text-slate-400">Track your academic badges, level progress, and streaks.</p>
+            <h1 className="text-lg font-bold text-[#173B63]">Achievements & Milestones</h1>
+            <p className="text-xs text-slate-500">Track your academic badges, level progress, and streaks.</p>
           </div>
           
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate('/profile')}
-              className="flex items-center space-x-2 bg-[#131E3A] border border-slate-700/60 text-slate-200 px-3.5 py-1.5 rounded-xl hover:bg-slate-800 transition shadow-sm text-sm"
+              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
             >
               <User size={15} />
-              <span className="font-medium">{user?.name || 'Student'}</span>
+              <span>{user?.name || 'Student'}</span>
             </button>
           </div>
         </header>
@@ -116,24 +116,24 @@ export default function Achievements() {
           {/* Top Row: Level & Streak Cards */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
             {/* XP Level Card */}
-            <div className="bg-[#0B132B] border border-slate-800/80 p-6 rounded-2xl shadow-lg flex flex-col justify-between">
+            <div className="bg-white border border-[#5B8DEF]/20 p-6 rounded-2xl shadow-sm flex flex-col justify-between">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-xs font-medium text-slate-400">Academic Level</p>
-                  <h3 className="text-3xl font-extrabold text-blue-400 mt-1">Level {currentLevel}</h3>
+                  <p className="text-xs font-medium text-slate-500">Academic Level</p>
+                  <h3 className="text-3xl font-extrabold text-[#5B8DEF] mt-1">Level {currentLevel}</h3>
                 </div>
-                <div className="p-3 bg-blue-950/60 border border-blue-800/40 rounded-xl text-blue-400">
+                <div className="p-3 bg-[#5B8DEF]/10 border border-[#5B8DEF]/30 rounded-xl text-[#5B8DEF]">
                   <Zap size={22} />
                 </div>
               </div>
               <div className="mt-4">
-                <div className="flex justify-between text-xs text-slate-400 mb-1">
+                <div className="flex justify-between text-xs text-slate-500 mb-1">
                   <span>XP Progress</span>
-                  <span>{xpProgress} / 500 XP</span>
+                  <span className="font-medium text-[#173B63]">{xpProgress} / 500 XP</span>
                 </div>
-                <div className="w-full bg-slate-800 h-2 rounded-full overflow-hidden">
+                <div className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/20 h-2.5 rounded-full overflow-hidden">
                   <div 
-                    className="bg-blue-500 h-full rounded-full transition-all duration-500" 
+                    className="bg-[#5B8DEF] h-full rounded-full transition-all duration-500" 
                     style={{ width: `${(xpProgress / 500) * 100}%` }}
                   ></div>
                 </div>
@@ -141,43 +141,43 @@ export default function Achievements() {
             </div>
 
             {/* Streak Tracker Card */}
-            <div className="bg-[#0B132B] border border-slate-800/80 p-6 rounded-2xl shadow-lg flex flex-col justify-between">
+            <div className="bg-white border border-[#5B8DEF]/20 p-6 rounded-2xl shadow-sm flex flex-col justify-between">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-xs font-medium text-slate-400">Study Streak</p>
-                  <h3 className="text-3xl font-extrabold text-amber-400 mt-1">5 Days 🔥</h3>
+                  <p className="text-xs font-medium text-slate-500">Study Streak</p>
+                  <h3 className="text-3xl font-extrabold text-[#F5B860] mt-1">5 Days 🔥</h3>
                 </div>
-                <div className="p-3 bg-amber-950/60 border border-amber-800/40 rounded-xl text-amber-400">
+                <div className="p-3 bg-[#F5B860]/10 border border-[#F5B860]/30 rounded-xl text-[#F5B860]">
                   <Flame size={22} />
                 </div>
               </div>
-              <p className="text-xs text-slate-400 mt-4">Keep logging in daily to maintain your active streak!</p>
+              <p className="text-xs text-slate-500 mt-4">Keep logging in daily to maintain your active streak!</p>
             </div>
 
             {/* Total XP Card */}
-            <div className="bg-[#0B132B] border border-slate-800/80 p-6 rounded-2xl shadow-lg flex flex-col justify-between">
+            <div className="bg-white border border-[#5B8DEF]/20 p-6 rounded-2xl shadow-sm flex flex-col justify-between">
               <div className="flex justify-between items-start">
                 <div>
-                  <p className="text-xs font-medium text-slate-400">Total Score Earned</p>
-                  <h3 className="text-3xl font-extrabold text-emerald-400 mt-1">{totalXP} XP</h3>
+                  <p className="text-xs font-medium text-slate-500">Total Score Earned</p>
+                  <h3 className="text-3xl font-extrabold text-[#48B8A6] mt-1">{totalXP} XP</h3>
                 </div>
-                <div className="p-3 bg-emerald-950/60 border border-emerald-800/40 rounded-xl text-emerald-400">
+                <div className="p-3 bg-[#48B8A6]/10 border border-[#48B8A6]/30 rounded-xl text-[#48B8A6]">
                   <Award size={22} />
                 </div>
               </div>
-              <p className="text-xs text-slate-400 mt-4">Accumulated via courses & high academic standing.</p>
+              <p className="text-xs text-slate-500 mt-4">Accumulated via courses & high academic standing.</p>
             </div>
           </div>
 
           {/* Badges Section */}
-          <div className="bg-[#0B132B] border border-slate-800/80 rounded-2xl shadow-lg p-6">
+          <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-6">
             <div className="flex items-center space-x-3 mb-6">
-              <div className="bg-amber-950/60 border border-amber-800/40 p-3 rounded-xl text-amber-400">
+              <div className="bg-[#F5B860]/10 border border-[#F5B860]/30 p-3 rounded-xl text-[#F5B860]">
                 <Award size={24} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-white">Your Badges & Unlocks</h3>
-                <p className="text-xs text-slate-400">Badges are automatically unlocked based on your academic performance.</p>
+                <h3 className="text-base font-bold text-[#173B63]">Your Badges & Unlocks</h3>
+                <p className="text-xs text-slate-500">Badges are automatically unlocked based on your academic performance.</p>
               </div>
             </div>
 
@@ -189,8 +189,8 @@ export default function Achievements() {
                     key={badge.id} 
                     className={`border rounded-2xl p-5 flex flex-col justify-between transition-all ${
                       badge.unlocked 
-                        ? 'bg-[#070F22] border-slate-800 shadow-md' 
-                        : 'bg-[#070F22]/40 border-slate-900 opacity-60'
+                        ? 'bg-[#F2F7FC]/60 border-[#5B8DEF]/30 shadow-sm' 
+                        : 'bg-white border-slate-200 opacity-60'
                     }`}
                   >
                     <div>
@@ -198,16 +198,16 @@ export default function Achievements() {
                         <div className={`p-3 rounded-xl border ${badge.color}`}>
                           <IconComponent size={22} />
                         </div>
-                        <span className={`text-[10px] px-2 py-0.5 rounded-full font-semibold border ${
+                        <span className={`text-[10px] px-2.5 py-1 rounded-full font-semibold border ${
                           badge.unlocked 
-                            ? 'bg-emerald-950/80 text-emerald-400 border-emerald-800/50' 
-                            : 'bg-slate-900 text-slate-500 border-slate-800'
+                            ? 'bg-[#48B8A6]/10 text-[#48B8A6] border-[#48B8A6]/30' 
+                            : 'bg-slate-100 text-slate-500 border-slate-200'
                         }`}>
                           {badge.unlocked ? 'Unlocked' : 'Locked'}
                         </span>
                       </div>
-                      <h4 className="font-bold text-white text-base mb-1">{badge.title}</h4>
-                      <p className="text-xs text-slate-400 leading-relaxed">{badge.description}</p>
+                      <h4 className="font-bold text-[#173B63] text-base mb-1">{badge.title}</h4>
+                      <p className="text-xs text-slate-500 leading-relaxed">{badge.description}</p>
                     </div>
                   </div>
                 );
@@ -216,21 +216,21 @@ export default function Achievements() {
           </div>
 
           {/* Unlock History Feed */}
-          <div className="bg-[#0B132B] border border-slate-800/80 rounded-2xl shadow-lg p-6">
+          <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-6">
             <div className="flex items-center space-x-2 mb-4">
-              <Clock className="text-blue-400" size={18} />
-              <h3 className="text-base font-bold text-white">Recent Milestone Activity</h3>
+              <Clock className="text-[#5B8DEF]" size={18} />
+              <h3 className="text-base font-bold text-[#173B63]">Recent Milestone Activity</h3>
             </div>
             <div className="space-y-3">
               {recentHistory.map((item) => {
                 const ItemIcon = item.icon;
                 return (
-                  <div key={item.id} className="flex items-center justify-between bg-[#070F22] border border-slate-800/60 p-3.5 rounded-xl text-xs">
+                  <div key={item.id} className="flex items-center justify-between bg-[#F2F7FC] border border-[#5B8DEF]/20 p-3.5 rounded-xl text-xs">
                     <div className="flex items-center space-x-3">
-                      <div className={`p-2 rounded-lg bg-slate-900 ${item.color}`}>
+                      <div className={`p-2 rounded-lg bg-white border border-[#5B8DEF]/20 ${item.color}`}>
                         <ItemIcon size={16} />
                       </div>
-                      <span className="text-slate-200 font-medium">{item.action}</span>
+                      <span className="text-[#173B63] font-medium">{item.action}</span>
                     </div>
                     <span className="text-slate-500">{item.time}</span>
                   </div>

@@ -62,7 +62,8 @@ body {
   padding: 0;
   width: 100%;
   overflow-x: hidden;
-  background-color: #f9d5e5;
+  background-color: #F2F7FC;
+  color: #173B63;
   font-family: system-ui, -apple-system, sans-serif;
 }
 
@@ -76,7 +77,7 @@ body {
   flex-direction: column;
   box-sizing: border-box;
   background-color: #f9d5e5;
-  color: #581c25;
+  color: #173B63;
 }
 
 h1,

@@ -22,16 +22,16 @@ export default function Login() {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
-      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-lg border border-slate-100">
-        <h2 className="mb-2 text-center text-3xl font-extrabold text-slate-800">EduMetrics</h2>
+    <div className="flex min-h-screen items-center justify-center bg-[#F2F7FC] px-4 text-[#173B63]">
+      <div className="w-full max-w-md rounded-2xl bg-white p-8 shadow-sm border border-[#5B8DEF]/20">
+        <h2 className="mb-2 text-center text-3xl font-extrabold text-[#173B63]">EduMetrics</h2>
         <p className="mb-8 text-center text-sm text-slate-500">Sign in to your academic analytics dashboard</p>
         
-        {error && <div className="mb-4 rounded-lg bg-red-50 p-3 text-sm text-red-600">{error}</div>}
+        {error && <div className="mb-4 rounded-xl bg-rose-50 border border-rose-200 p-3 text-xs text-rose-600 font-medium">{error}</div>}
 
         <form onSubmit={handleLogin} className="space-y-5">
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Email Address</label>
+            <label className="mb-1 block text-xs font-semibold text-slate-600">Email Address</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                 <Mail size={18} />
@@ -42,13 +42,13 @@ export default function Login() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="student@university.ac.lk"
-                className="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-4 text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-xl border border-[#5B8DEF]/30 bg-[#F2F7FC] py-2.5 pl-10 pr-4 text-xs text-[#173B63] focus:border-[#5B8DEF] focus:outline-none focus:ring-1 focus:ring-[#5B8DEF]"
               />
             </div>
           </div>
 
           <div>
-            <label className="mb-1 block text-sm font-medium text-slate-700">Password</label>
+            <label className="mb-1 block text-xs font-semibold text-slate-600">Password</label>
             <div className="relative">
               <span className="absolute inset-y-0 left-0 flex items-center pl-3 text-slate-400">
                 <Lock size={18} />
@@ -59,22 +59,22 @@ export default function Login() {
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
                 placeholder="••••••••"
-                className="w-full rounded-lg border border-slate-300 py-2.5 pl-10 pr-4 text-slate-800 focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+                className="w-full rounded-xl border border-[#5B8DEF]/30 bg-[#F2F7FC] py-2.5 pl-10 pr-4 text-xs text-[#173B63] focus:border-[#5B8DEF] focus:outline-none focus:ring-1 focus:ring-[#5B8DEF]"
               />
             </div>
           </div>
 
           <button
             type="submit"
-            className="w-full rounded-lg bg-blue-600 py-2.5 font-semibold text-white transition duration-200 hover:bg-blue-700 shadow-md"
+            className="w-full rounded-xl bg-[#5B8DEF] py-2.5 text-xs font-semibold text-white transition duration-200 hover:bg-[#4975d1] shadow-sm"
           >
             Sign In
           </button>
         </form>
 
-        <p className="mt-6 text-center text-sm text-slate-600">
+        <p className="mt-6 text-center text-xs text-slate-500">
           Don't have an account?{' '}
-          <Link to="/register" className="font-medium text-blue-600 hover:underline">
+          <Link to="/register" className="font-medium text-[#5B8DEF] hover:underline">
             Register here
           </Link>
         </p>
