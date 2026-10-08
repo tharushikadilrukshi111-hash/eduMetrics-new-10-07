@@ -3,8 +3,11 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { BookOpen, PlusCircle, Trash2, User } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Courses() {
+
+  
   const [courses, setCourses] = useState([]);
   const [user, setUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
