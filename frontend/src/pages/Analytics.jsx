@@ -100,7 +100,7 @@ export default function Analytics() {
 
             <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-medium text-slate-500">Total Credits</p>
-              <h3 className="text-2xl font-extrabold text-[#48B8A6] mt-1">{totalCredits} / 120</h3>
+              <h3 className="text-2xl font-extrabold text-[#48B8A6] mt-1">{totalCredits} / 150</h3>
               <p className="text-[11px] text-slate-400 mt-1">Degree progress</p>
             </div>
 
