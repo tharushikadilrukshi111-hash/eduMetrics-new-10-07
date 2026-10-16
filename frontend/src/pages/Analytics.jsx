@@ -41,17 +41,19 @@ export default function Analytics() {
     let totalPoints = 0;
     let totalCredits = 0;
     courses.forEach((c) => {
-      totalPoints += c.gradePoint * c.credits;
-      totalCredits += c.credits;
+      const points = c.gradePoint ?? (c.grade === 'A' || c.grade === 'A+' ? 4.0 : c.grade === 'A-' ? 3.7 : c.grade === 'B+' ? 3.3 : c.grade === 'B' ? 3.0 : c.grade === 'B-' ? 2.7 : c.grade === 'C+' ? 2.3 : c.grade === 'C' ? 2.0 : c.grade === 'C-' ? 1.7 : c.grade === 'D+' ? 1.3 : c.grade === 'D' ? 1.0 : 0.0);
+      const creds = Number(c.credits) || 0;
+      totalPoints += points * creds;
+      totalCredits += creds;
     });
     return totalCredits === 0 ? '0.00' : (totalPoints / totalCredits).toFixed(2);
   };
 
-  const totalCredits = courses.reduce((acc, c) => acc + (c.credits || 0), 0);
+  const totalCredits = courses.reduce((acc, c) => acc + (Number(c.credits) || 0), 0);
 
   const chartData = courses.map(c => ({
     code: c.code,
-    gradePoint: c.gradePoint,
+    gradePoint: c.gradePoint ?? (c.grade === 'A' || c.grade === 'A+' ? 4.0 : c.grade === 'A-' ? 3.7 : c.grade === 'B+' ? 3.3 : c.grade === 'B' ? 3.0 : c.grade === 'B-' ? 2.7 : c.grade === 'C+' ? 2.3 : c.grade === 'C' ? 2.0 : c.grade === 'C-' ? 1.7 : c.grade === 'D+' ? 1.3 : c.grade === 'D' ? 1.0 : 0.0),
     name: c.name
   }));
 
@@ -76,7 +78,7 @@ export default function Analytics() {
               className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
             >
               <User size={15} />
-              <span>{user?.name || 'Student'}</span>
+              <span>{user?.name || 'Tharushika Dilrukshi'}</span>
             </button>
           </div>
         </header>
@@ -84,30 +86,24 @@ export default function Analytics() {
         {/* Page Content */}
         <main className="p-6 md:p-8 max-w-7xl w-full mx-auto space-y-6">
           
-          {/* Metrics Row */}
-          <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+          {/* Metrics Row (Updated to 3 columns neatly) */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-medium text-slate-500">Overall GPA</p>
               <h3 className="text-2xl font-extrabold text-[#5B8DEF] mt-1">{calculateGPA()}</h3>
-              <p className="text-[11px] text-slate-400 mt-1">Target: 3.80</p>
+              <p className="text-[11px] text-slate-400 mt-1">Cumulative calculation</p>
             </div>
 
             <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-medium text-slate-500">Total Courses</p>
               <h3 className="text-2xl font-extrabold text-[#173B63] mt-1">{courses.length}</h3>
-              <p className="text-[11px] text-slate-400 mt-1">Active semester</p>
+              <p className="text-[11px] text-slate-400 mt-1">Enrolled subjects</p>
             </div>
 
             <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-medium text-slate-500">Total Credits</p>
-              <h3 className="text-2xl font-extrabold text-[#48B8A6] mt-1">{totalCredits} / 150</h3>
+              <h3 className="text-2xl font-extrabold text-[#48B8A6] mt-1">{totalCredits} Credits</h3>
               <p className="text-[11px] text-slate-400 mt-1">Degree progress</p>
-            </div>
-
-            <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
-              <p className="text-xs font-medium text-slate-500">Attendance Rate</p>
-              <h3 className="text-2xl font-extrabold text-[#AFA8E8] mt-1">94%</h3>
-              <p className="text-[11px] text-slate-400 mt-1">Excellent standing</p>
             </div>
           </div>
 

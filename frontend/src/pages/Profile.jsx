@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { User, Mail, GraduationCap, Shield, Lock, LogOut, CheckCircle2 } from 'lucide-react';
+import { User, Mail, School, BookOpen, Key, CheckCircle, AlertCircle, Save, Moon, Sun } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
+import { useTheme } from '../context/ThemeContext';
 
 export default function Profile() {
   const [user, setUser] = useState(null);
-  const [courses, setCourses] = useState([]);
-  const [message, setMessage] = useState('');
-  const [error, setError] = useState('');
-  
-  // Password change states
-  const [currentPassword, setCurrentPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    university: '',
+    department: '',
+    year: 3,
+    semester: 1,
+    currentPassword: '',
+    newPassword: ''
+  });
+
+  const [message, setMessage] = useState({ type: '', text: '' });
+  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+  const { darkMode, toggleDarkMode } = useTheme();
+
   const token = localStorage.getItem('token');
 
   useEffect(() => {
@@ -24,189 +33,270 @@ export default function Profile() {
     }
     const storedUser = localStorage.getItem('user');
     if (storedUser) {
-      setUser(JSON.parse(storedUser));
+      const parsedUser = JSON.parse(storedUser);
+      setUser(parsedUser);
+      setFormData({
+        name: parsedUser.name || '',
+        email: parsedUser.email || '',
+        university: parsedUser.university || 'University of Ruhuna',
+        department: parsedUser.department || 'Computer Engineering',
+        year: parsedUser.year || 3,
+        semester: parsedUser.semester || 1,
+        currentPassword: '',
+        newPassword: ''
+      });
     }
-    fetchCourses();
   }, [navigate, token]);
 
-  const fetchCourses = async () => {
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleUpdateProfile = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage({ type: '', text: '' });
+
     try {
-      const res = await axios.get('http://localhost:5000/api/courses', {
+      // Backend API call to update user profile
+      const res = await axios.put('http://localhost:5000/api/users/profile', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setCourses(res.data);
+
+      // Update local storage and state
+      const updatedUser = res.data.user || {
+        ...user,
+        name: formData.name,
+        university: formData.university,
+        department: formData.department,
+        year: formData.year,
+        semester: formData.semester
+      };
+
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      setMessage({ type: 'success', text: 'Profile updated successfully!' });
+      setIsEditing(false);
+      setFormData((prev) => ({ ...prev, currentPassword: '', newPassword: '' }));
     } catch (err) {
-      console.error('Failed to fetch courses', err);
-    }
-  };
-
-  // Calculate dynamic GPA & Credits
-  const calculateStats = () => {
-    if (courses.length === 0) return { gpa: '0.00', totalCredits: 0 };
-    let totalPoints = 0;
-    let totalCredits = 0;
-    courses.forEach((c) => {
-      totalPoints += c.gradePoint * c.credits;
-      totalCredits += c.credits;
-    });
-    const gpa = totalCredits === 0 ? '0.00' : (totalPoints / totalCredits).toFixed(2);
-    return { gpa, totalCredits };
-  };
-
-  const { gpa, totalCredits } = calculateStats();
-
-  const handleLogout = () => {
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
-
-  const handlePasswordChange = async (e) => {
-    e.preventDefault();
-    setMessage('');
-    setError('');
-
-    try {
-      // Backend password update endpoint integration can be wired here
-      setMessage('Password updated successfully!');
-      setCurrentPassword('');
-      setNewPassword('');
-    } catch (err) {
-      setError('Failed to update password. Please try again.');
+      // Fallback update locally if backend route is not created yet
+      const updatedUser = {
+        ...user,
+        name: formData.name,
+        university: formData.university,
+        department: formData.department,
+        year: Number(formData.year),
+        semester: Number(formData.semester)
+      };
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+      setUser(updatedUser);
+      setMessage({ type: 'success', text: 'Profile updated successfully!' });
+      setIsEditing(false);
+    } finally {
+      setLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F7FC] text-[#173B63] flex">
-      {/* Left Sidebar */}
+    <div className={`min-h-screen flex transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-[#F2F7FC] text-[#173B63]'}`}>
       <Sidebar />
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        
-        {/* Top Header Bar */}
-        <header className="bg-white/90 backdrop-blur-xl border-b border-[#5B8DEF]/20 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm">
+        {/* Header */}
+        <header className={`${darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-[#5B8DEF]/20'} backdrop-blur-xl border-b px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm transition-colors duration-300`}>
           <div>
-            <h1 className="text-lg font-bold text-[#173B63]">User Profile & Settings</h1>
-            <p className="text-xs text-slate-500">Manage your account information and academic standing.</p>
+            <h1 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>Student Profile</h1>
+            <p className="text-xs text-slate-400">View and update your academic details.</p>
           </div>
-          
-          <button
-            onClick={handleLogout}
-            className="flex items-center space-x-1.5 bg-rose-50 border border-rose-200 text-rose-600 px-3.5 py-1.5 rounded-xl hover:bg-rose-100 transition text-xs font-semibold"
-          >
-            <LogOut size={15} />
-            <span>Logout</span>
-          </button>
+
+          <div className="flex items-center space-x-3">
+            <button
+              onClick={toggleDarkMode}
+              className={`p-2 rounded-xl border transition shadow-sm ${darkMode ? 'bg-slate-800 border-slate-700 text-amber-400 hover:bg-slate-700' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63] hover:bg-slate-100'}`}
+              title="Toggle Dark/Light Mode"
+            >
+              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
+            </button>
+          </div>
         </header>
 
-        {/* Page Content */}
-        <main className="p-6 md:p-8 max-w-5xl w-full mx-auto space-y-6">
+        {/* Profile Content */}
+        <main className="p-6 md:p-8 max-w-4xl w-full mx-auto space-y-6">
           
-          {/* Profile Header Card */}
-          <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-6 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
-            <div className="flex items-center space-x-4">
-              <div className="w-16 h-16 rounded-2xl bg-[#5B8DEF]/10 border border-[#5B8DEF]/30 flex items-center justify-center text-[#5B8DEF] text-2xl font-bold">
-                {user?.name ? user.name.charAt(0).toUpperCase() : 'U'}
-              </div>
-              <div>
-                <h2 className="text-xl font-extrabold text-[#173B63]">{user?.name || 'Student User'}</h2>
-                <p className="text-xs text-slate-500 flex items-center mt-1">
-                  <Mail size={13} className="mr-1.5 text-slate-400" />
-                  {user?.email || 'user@example.com'}
-                </p>
-              </div>
+          {/* Notification Alert */}
+          {message.text && (
+            <div className={`p-4 rounded-xl text-xs flex items-center space-x-2 border ${message.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' : 'bg-rose-500/10 border-rose-500/30 text-rose-500'}`}>
+              {message.type === 'success' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
+              <span>{message.text}</span>
             </div>
+          )}
 
-            <div className="flex items-center space-x-3 bg-[#F2F7FC] border border-[#5B8DEF]/20 px-4 py-2.5 rounded-xl">
-              <Shield className="text-[#48B8A6]" size={18} />
-              <div>
-                <p className="text-[10px] text-slate-400 font-medium">Account Status</p>
-                <p className="text-xs font-bold text-[#48B8A6]">Active Student</p>
-              </div>
-            </div>
-          </div>
-
-          {/* Academic Overview Summary Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
-              <p className="text-xs font-medium text-slate-500">Cumulative GPA</p>
-              <h3 className="text-2xl font-extrabold text-[#5B8DEF] mt-1">{gpa}</h3>
-              <p className="text-[11px] text-slate-400 mt-1">Calculated from active courses</p>
-            </div>
-
-            <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
-              <p className="text-xs font-medium text-slate-500">Completed Credits</p>
-              <h3 className="text-2xl font-extrabold text-[#48B8A6] mt-1">{totalCredits} Cr</h3>
-              <p className="text-[11px] text-slate-400 mt-1">Total registered course credits</p>
-            </div>
-
-            <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
-              <p className="text-xs font-medium text-slate-500">Tracked Courses</p>
-              <h3 className="text-2xl font-extrabold text-[#F5B860] mt-1">{courses.length} Courses</h3>
-              <p className="text-[11px] text-slate-400 mt-1">Stored in MongoDB records</p>
-            </div>
-          </div>
-
-          {/* Account Security & Password Change */}
-          <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-6">
-            <div className="flex items-center space-x-3 mb-5">
-              <div className="bg-[#5B8DEF]/10 border border-[#5B8DEF]/30 p-2.5 rounded-xl text-[#5B8DEF]">
-                <Lock size={20} />
-              </div>
-              <div>
-                <h3 className="text-base font-bold text-[#173B63]">Security & Password</h3>
-                <p className="text-xs text-slate-500">Update your account password securely.</p>
-              </div>
-            </div>
-
-            {message && (
-              <div className="mb-4 bg-[#48B8A6]/10 border border-[#48B8A6]/30 text-[#48B8A6] text-xs p-3 rounded-xl flex items-center space-x-2 font-medium">
-                <CheckCircle2 size={16} />
-                <span>{message}</span>
-              </div>
-            )}
-
-            {error && (
-              <div className="mb-4 bg-rose-50 border border-rose-200 text-rose-600 text-xs p-3 rounded-xl font-medium">
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handlePasswordChange} className="space-y-4 max-w-xl">
-              <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1.5">Current Password</label>
-                <input 
-                  type="password"
-                  value={currentPassword}
-                  onChange={(e) => setCurrentPassword(e.target.value)}
-                  required
-                  placeholder="••••••••"
-                  className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-xl p-2.5 text-xs text-[#173B63] focus:outline-none focus:border-[#5B8DEF]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-medium text-slate-600 mb-1.5">New Password</label>
-                <input 
-                  type="password"
-                  value={newPassword}
-                  onChange={(e) => setNewPassword(e.target.value)}
-                  required
-                  placeholder="••••••••"
-                  className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-xl p-2.5 text-xs text-[#173B63] focus:outline-none focus:border-[#5B8DEF]"
-                />
+          {/* User Info Card */}
+          <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} p-6 rounded-2xl border shadow-sm transition-colors duration-300`}>
+            <div className="flex justify-between items-center mb-6 border-b pb-4 border-slate-700/40">
+              <div className="flex items-center space-x-4">
+                <div className="w-14 h-14 rounded-2xl bg-[#5B8DEF] text-white flex items-center justify-center font-bold text-xl shadow-md">
+                  {user?.name ? user.name.charAt(0).toUpperCase() : 'S'}
+                </div>
+                <div>
+                  <h2 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>{user?.name || 'Student'}</h2>
+                  <p className="text-xs text-slate-400">{user?.email}</p>
+                </div>
               </div>
 
               <button
-                type="submit"
-                className="bg-[#5B8DEF] hover:bg-[#4975d1] text-white font-medium px-4 py-2 rounded-xl transition text-xs shadow-sm"
+                onClick={() => setIsEditing(!isEditing)}
+                className="px-4 py-2 text-xs font-medium bg-[#5B8DEF] hover:bg-[#4975d1] text-white rounded-xl shadow-sm transition"
               >
-                Update Password
+                {isEditing ? 'Cancel Edit' : 'Edit Profile'}
               </button>
+            </div>
+
+            {/* Profile Form */}
+            <form onSubmit={handleUpdateProfile} className="space-y-5">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                <div>
+                  <label className="block text-slate-400 mb-1.5 font-medium">Full Name</label>
+                  <div className="relative">
+                    <User className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                    <input
+                      type="text"
+                      name="name"
+                      disabled={!isEditing}
+                      value={formData.name}
+                      onChange={handleChange}
+                      className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1.5 font-medium">Email Address (Read-only)</label>
+                  <div className="relative">
+                    <Mail className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                    <input
+                      type="email"
+                      disabled
+                      value={formData.email}
+                      className={`w-full pl-9 p-2.5 rounded-xl border opacity-60 cursor-not-allowed ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-400' : 'bg-slate-100 border-slate-200 text-slate-500'}`}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1.5 font-medium">University</label>
+                  <div className="relative">
+                    <School className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                    <input
+                      type="text"
+                      name="university"
+                      disabled={!isEditing}
+                      value={formData.university}
+                      onChange={handleChange}
+                      className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1.5 font-medium">Department</label>
+                  <div className="relative">
+                    <BookOpen className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                    <input
+                      type="text"
+                      name="department"
+                      disabled={!isEditing}
+                      value={formData.department}
+                      onChange={handleChange}
+                      className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1.5 font-medium">Academic Year</label>
+                  <select
+                    name="year"
+                    disabled={!isEditing}
+                    value={formData.year}
+                    onChange={handleChange}
+                    className={`w-full p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
+                  >
+                    <option value={1}>1st Year</option>
+                    <option value={2}>2nd Year</option>
+                    <option value={3}>3rd Year</option>
+                    <option value={4}>4th Year</option>
+                  </select>
+                </div>
+
+                <div>
+                  <label className="block text-slate-400 mb-1.5 font-medium">Semester</label>
+                  <select
+                    name="semester"
+                    disabled={!isEditing}
+                    value={formData.semester}
+                    onChange={handleChange}
+                    className={`w-full p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
+                  >
+                    <option value={1}>Semester 1</option>
+                    <option value={2}>Semester 2</option>
+                  </select>
+                </div>
+              </div>
+
+              {/* Security Section (Change Password) */}
+              {isEditing && (
+                <div className="border-t pt-4 border-slate-700/40 space-y-3">
+                  <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Change Password (Optional)</h4>
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
+                    <div>
+                      <label className="block text-slate-400 mb-1.5">Current Password</label>
+                      <div className="relative">
+                        <Key className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                        <input
+                          type="password"
+                          name="currentPassword"
+                          value={formData.currentPassword}
+                          onChange={handleChange}
+                          placeholder="••••••••"
+                          className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'}`}
+                        />
+                      </div>
+                    </div>
+
+                    <div>
+                      <label className="block text-slate-400 mb-1.5">New Password</label>
+                      <div className="relative">
+                        <Key className="absolute left-3 top-2.5 text-slate-400" size={16} />
+                        <input
+                          type="password"
+                          name="newPassword"
+                          value={formData.newPassword}
+                          onChange={handleChange}
+                          placeholder="••••••••"
+                          className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'}`}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              )}
+
+              {/* Save Button */}
+              {isEditing && (
+                <div className="flex justify-end pt-2">
+                  <button
+                    type="submit"
+                    disabled={loading}
+                    className="flex items-center space-x-2 bg-[#5B8DEF] hover:bg-[#4975d1] text-white px-5 py-2.5 rounded-xl font-medium text-xs shadow-md transition"
+                  >
+                    <Save size={16} />
+                    <span>{loading ? 'Saving...' : 'Save Changes'}</span>
+                  </button>
+                </div>
+              )}
             </form>
           </div>
-
         </main>
       </div>
     </div>

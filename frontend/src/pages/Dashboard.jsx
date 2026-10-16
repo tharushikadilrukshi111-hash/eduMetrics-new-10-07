@@ -1,29 +1,28 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { BookOpen, Award, PlusCircle, Trash2, User, BarChart2, Moon, Sun } from 'lucide-react';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, CartesianGrid } from 'recharts';
+import { 
+  Award, BookOpen, GraduationCap, TrendingUp, Calendar, Layers, ChevronRight, User 
+} from 'lucide-react';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell } from 'recharts';
 import Sidebar from '../components/Sidebar';
 import { useTheme } from '../context/ThemeContext';
 
 export default function Dashboard() {
-  const [user, setUser] = useState(null);
   const [courses, setCourses] = useState([]);
-  const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
-    name: '',
-    code: '',
-    credits: 3,
-    grade: 'A',
-    semester: 1,
-    year: 3,
-    category: 'Core'
-  });
-  const [error, setError] = useState('');
+  const [user, setUser] = useState(null);
+  const [selectedFilter, setSelectedFilter] = useState('ALL');
   const navigate = useNavigate();
-
-  const { darkMode, toggleDarkMode } = useTheme();
+  const { darkMode } = useTheme();
   const token = localStorage.getItem('token');
+
+  // Grade Point Mapping
+  const gradePoints = {
+    'A+': 4.0, 'A': 4.0, 'A-': 3.7,
+    'B+': 3.3, 'B': 3.0, 'B-': 2.7,
+    'C+': 2.3, 'C': 2.0, 'C-': 1.7,
+    'D+': 1.3, 'D': 1.0, 'E': 0.0
+  };
 
   useEffect(() => {
     if (!token) {
@@ -31,9 +30,8 @@ export default function Dashboard() {
       return;
     }
     const storedUser = localStorage.getItem('user');
-    if (storedUser) {
-      setUser(JSON.parse(storedUser));
-    }
+    if (storedUser) setUser(JSON.parse(storedUser));
+
     fetchCourses();
   }, [navigate, token]);
 
@@ -44,350 +42,240 @@ export default function Dashboard() {
       });
       setCourses(res.data);
     } catch (err) {
-      console.error('Failed to fetch courses', err);
+      console.error('Error fetching courses', err);
     }
   };
 
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const handleAddCourse = async (e) => {
-    e.preventDefault();
-    try {
-      await axios.post('http://localhost:5000/api/courses', formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      setShowModal(false);
-      setFormData({ name: '', code: '', credits: 3, grade: 'A', semester: 1, year: 3, category: 'Core' });
-      fetchCourses();
-    } catch (err) {
-      setError(err.response?.data?.message || 'Failed to add course');
-    }
-  };
-
-  const handleDeleteCourse = async (id) => {
-    try {
-      await axios.delete(`http://localhost:5000/api/courses/${id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      fetchCourses();
-    } catch (err) {
-      console.error('Failed to delete course', err);
-    }
-  };
-
-  // Calculate Cumulative GPA
-  const calculateGPA = () => {
-    if (courses.length === 0) return '0.00';
+  // Helper Function: Calculate GPA for a given set of courses
+  const calculateGPA = (courseList) => {
+    if (!courseList || courseList.length === 0) return '0.00';
     let totalPoints = 0;
     let totalCredits = 0;
-    courses.forEach((c) => {
-      totalPoints += c.gradePoint * c.credits;
-      totalCredits += c.credits;
+
+    courseList.forEach(course => {
+      const points = gradePoints[course.grade] ?? 0;
+      const credits = Number(course.credits) || 0;
+      totalPoints += points * credits;
+      totalCredits += credits;
     });
-    return totalCredits === 0 ? '0.00' : (totalPoints / totalCredits).toFixed(2);
+
+    return totalCredits > 0 ? (totalPoints / totalCredits).toFixed(2) : '0.00';
   };
 
-  // Prepare chart data
-  const chartData = courses.map(c => ({
-    code: c.code,
-    gradePoint: c.gradePoint,
-    credits: c.credits
-  }));
+  // Overall Cumulative GPA
+  const overallGPA = calculateGPA(courses);
+  const totalCredits = courses.reduce((acc, c) => acc + (Number(c.credits) || 0), 0);
 
-  // Greeting based on time of day
-  const getGreeting = () => {
-    const hour = new Date().getHours();
-    if (hour >= 5 && hour < 12) {
-      return "Good Morning";
-    } else if (hour >= 12 && hour < 17) {
-      return "Good Afternoon";
-    } else if (hour >= 17 && hour < 21) {
-      return "Good Evening";
-    } else {
-      return "Good Night";
-    }
+  // Group Courses by Year & Semester dynamically
+  const getCategorizedData = () => {
+    const years = [1, 2, 3, 4];
+    const categories = [];
+
+    years.forEach(yearNum => {
+      const yearCourses = courses.filter(c => Number(c.year) === yearNum);
+      if (yearCourses.length > 0) {
+        const sem1Courses = yearCourses.filter(c => Number(c.semester) === 1);
+        const sem2Courses = yearCourses.filter(c => Number(c.semester) === 2);
+
+        categories.push({
+          year: yearNum,
+          yearGPA: calculateGPA(yearCourses),
+          totalYearCourses: yearCourses.length,
+          semesters: [
+            { sem: 1, gpa: calculateGPA(sem1Courses), count: sem1Courses.length, courses: sem1Courses },
+            { sem: 2, gpa: calculateGPA(sem2Courses), count: sem2Courses.length, courses: sem2Courses }
+          ]
+        });
+      }
+    });
+
+    return categories;
   };
+
+  const categorizedData = getCategorizedData();
+
+  // Filter courses for chart & detailed view
+  const filteredCourses = courses.filter(c => {
+    if (selectedFilter === 'ALL') return true;
+    const [y, s] = selectedFilter.split('-'); // e.g. "Y1-S1"
+    return Number(c.year) === Number(y) && Number(c.semester) === Number(s);
+  });
 
   return (
-    <div className={`min-h-screen flex transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-[#F2F7FC] text-[#173B63]'}`}>
-      {/* Left Sidebar Component */}
+    <div className={`min-h-screen flex transition-colors duration-300 ${darkMode ? 'bg-[#0B0F19] text-slate-100' : 'bg-[#F8FAFC] text-slate-800'}`}>
       <Sidebar />
 
-      {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0">
-        
-        {/* Top Header Bar */}
-        <header className={`${darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-[#5B8DEF]/20'} backdrop-blur-xl border-b px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm transition-colors duration-300`}>
+        {/* Top Header */}
+        <header className={`${darkMode ? 'bg-[#111827]/90 border-[#1F293D]' : 'bg-white/90 border-slate-200'} backdrop-blur-xl border-b px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm`}>
           <div>
-            <h1 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>
-              {getGreeting()}, {user?.name?.split(' ')[0] || 'Student'}! 👋
-            </h1>
-            <p className="text-xs text-slate-400">Here's your academic journey at a glance.</p>
+            <h1 className="text-lg font-bold">Academic Overview</h1>
+            <p className="text-xs text-slate-400">Welcome back, {user?.name || 'Student'}</p>
           </div>
-          
-          <div className="flex items-center space-x-3">
-            {/* Dark Mode Toggle Button */}
-            <button
-              onClick={toggleDarkMode}
-              className={`p-2 rounded-xl border transition shadow-sm ${darkMode ? 'bg-slate-800 border-slate-700 text-amber-400 hover:bg-slate-700' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63] hover:bg-slate-100'}`}
-              title="Toggle Dark/Light Mode"
-            >
-              {darkMode ? <Sun size={18} /> : <Moon size={18} />}
-            </button>
 
-            <button
+          <button
               onClick={() => navigate('/profile')}
-              className={`flex items-center space-x-2 border px-3.5 py-1.5 rounded-xl transition shadow-sm text-sm font-medium ${darkMode ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63] hover:bg-slate-100'}`}
-            >
-              <User size={15} />
-              <span>{user?.name || 'Student'}</span>
-            </button>
-          </div>
+              className={`flex items-center space-x-2 border px-3.5 py-1.5 rounded-xl text-xs font-medium transition ${darkMode ? 'bg-[#151D2A] border-[#2D3748] text-slate-200' : 'bg-[#F8FAFC] border-slate-200 text-slate-700'}`}
+          >
+  <User size={15} />
+  <span>{user?.name || 'Tharushika Dilrukshi'}</span>
+</button>
         </header>
 
-        {/* Dashboard Content */}
+        {/* Main Dashboard Content */}
         <main className="p-6 md:p-8 max-w-7xl w-full mx-auto space-y-6">
           
-          {/* Stats Row - Compact & Balanced */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-5">
-            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} p-5 rounded-2xl shadow-sm flex items-center justify-between transition-colors duration-300`}>
+          {/* Top Overall Stats Banner */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            
+            {/* Cumulative GPA Card */}
+            <div className={`p-6 rounded-2xl border shadow-sm flex items-center justify-between ${darkMode ? 'bg-gradient-to-br from-indigo-950/80 to-slate-900 border-indigo-900/50' : 'bg-gradient-to-br from-indigo-600 to-indigo-700 text-white border-indigo-600'}`}>
               <div>
-                <p className="text-xs font-medium text-slate-400">Cumulative GPA</p>
-                <h3 className={`text-2xl font-extrabold mt-0.5 ${darkMode ? 'text-blue-400' : 'text-[#5B8DEF]'}`}>{calculateGPA()}</h3>
+                <p className="text-xs font-medium opacity-80 uppercase tracking-wider">Overall Cumulative GPA</p>
+                <h2 className="text-4xl font-extrabold mt-1">{overallGPA}</h2>
+                <p className="text-xs opacity-75 mt-1">Based on {courses.length} subjects</p>
               </div>
-              <div className={`${darkMode ? 'bg-blue-950/60 border-blue-800/40 text-blue-400' : 'bg-[#5B8DEF]/10 border-[#5B8DEF]/30 text-[#5B8DEF]'} p-3 rounded-xl`}>
-                <Award size={24} />
+              <div className="p-3.5 rounded-2xl bg-white/10 backdrop-blur-md">
+                <Award size={32} className="text-amber-300" />
               </div>
             </div>
 
-            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} p-5 rounded-2xl shadow-sm flex items-center justify-between transition-colors duration-300`}>
+            {/* Total Earned Credits */}
+            <div className={`p-6 rounded-2xl border shadow-sm flex items-center justify-between ${darkMode ? 'bg-[#111827] border-[#1F293D]' : 'bg-white border-slate-200'}`}>
               <div>
-                <p className="text-xs font-medium text-slate-400">Total Courses Enrolled</p>
-                <h3 className={`text-2xl font-extrabold mt-0.5 ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>{courses.length}</h3>
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Total Completed Credits</p>
+                <h2 className="text-3xl font-extrabold mt-1">{totalCredits}</h2>
+                <p className="text-xs text-slate-400 mt-1">Academic Credit Load</p>
               </div>
-              <div className={`${darkMode ? 'bg-emerald-950/60 border-emerald-800/40 text-emerald-400' : 'bg-[#48B8A6]/10 border-[#48B8A6]/30 text-[#48B8A6]'} p-3 rounded-xl`}>
-                <BookOpen size={24} />
+              <div className="p-3.5 rounded-2xl bg-indigo-500/10 text-indigo-500">
+                <BookOpen size={28} />
               </div>
             </div>
 
-            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} p-5 rounded-2xl shadow-sm flex items-center justify-between transition-colors duration-300`}>
+            {/* Current Academic Standing */}
+            <div className={`p-6 rounded-2xl border shadow-sm flex items-center justify-between ${darkMode ? 'bg-[#111827] border-[#1F293D]' : 'bg-white border-slate-200'}`}>
               <div>
-                <p className="text-xs font-medium text-slate-400">Academic Year / Sem</p>
-                <h3 className={`text-base font-bold mt-0.5 ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>Year {user?.year || 3} Sem {user?.semester || 1}</h3>
+                <p className="text-xs font-medium text-slate-400 uppercase tracking-wider">Current Academic Level</p>
+                <h2 className="text-xl font-bold mt-1">Year {user?.year || 3} - Sem {user?.semester || 1}</h2>
+                <p className="text-xs text-emerald-500 font-medium mt-1">Good Academic Standing</p>
               </div>
-              <div className={`${darkMode ? 'bg-purple-950/60 border-purple-800/40 text-purple-400' : 'bg-[#AFA8E8]/20 border-[#AFA8E8]/40 text-[#7c72d6]'} p-3 rounded-xl`}>
-                <User size={24} />
+              <div className="p-3.5 rounded-2xl bg-emerald-500/10 text-emerald-500">
+                <GraduationCap size={28} />
               </div>
             </div>
+
           </div>
 
-          {/* Analytics Chart Section */}
-          {courses.length > 0 && (
-            <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} rounded-2xl shadow-sm p-5 transition-colors duration-300`}>
-              <div className="flex items-center space-x-2 mb-4">
-                <BarChart2 className={darkMode ? 'text-blue-400' : 'text-[#5B8DEF]'} size={18} />
-                <h3 className={`text-base font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>Course Grade Points Analytics</h3>
-              </div>
-              <div className="h-64 w-full">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} stroke={darkMode ? '#1e293b' : '#F2F7FC'} />
-                    <XAxis dataKey="code" stroke="#64748b" fontSize={12} />
-                    <YAxis domain={[0, 4]} stroke="#64748b" fontSize={12} />
-                    <Tooltip 
-                      contentStyle={{ 
-                        backgroundColor: darkMode ? '#0f172a' : '#ffffff', 
-                        borderColor: darkMode ? '#334155' : '#5B8DEF33', 
-                        borderRadius: '0.75rem', 
-                        color: darkMode ? '#f8fafc' : '#173B63', 
-                        fontSize: '12px', 
-                        boxShadow: '0 4px 6px -1px rgb(0 0 0 / 0.1)' 
-                      }} 
-                    />
-                    <Bar dataKey="gradePoint" fill={darkMode ? '#3b82f6' : '#5B8DEF'} radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
+          {/* YEAR-WISE & SEMESTER-WISE BREAKDOWN SECTION */}
+          <div className="space-y-4">
+            <div className="flex justify-between items-center">
+              <div>
+                <h3 className="text-base font-bold">Academic Year & Semester Breakdown</h3>
+                <p className="text-xs text-slate-400">GPA categorized by academic years and semesters.</p>
               </div>
             </div>
-          )}
 
-          {/* Courses Section */}
-          <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} rounded-2xl shadow-sm p-5 transition-colors duration-300`}>
-            <div className="flex justify-between items-center mb-4">
-              <h3 className={`text-base font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>Enrolled Courses & Grades</h3>
-              <button
-                onClick={() => setShowModal(true)}
-                className="flex items-center space-x-1.5 bg-[#5B8DEF] hover:bg-[#4975d1] text-white font-medium px-3.5 py-2 rounded-xl shadow-sm transition text-xs"
-              >
-                <PlusCircle size={15} />
-                <span>Add Course</span>
-              </button>
-            </div>
-
-            {courses.length === 0 ? (
-              <p className="text-slate-400 text-center py-6 text-sm">No courses added yet. Click 'Add Course' to start tracking your GPA.</p>
+            {categorizedData.length === 0 ? (
+              <div className={`p-8 rounded-2xl border text-center text-xs text-slate-400 ${darkMode ? 'bg-[#111827] border-[#1F293D]' : 'bg-white border-slate-200'}`}>
+                No course data available yet. Add courses with respective Year & Semester to see the breakdown.
+              </div>
             ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse text-sm">
-                  <thead>
-                    <tr className={`border-b text-xs ${darkMode ? 'border-slate-800 text-slate-400' : 'border-[#5B8DEF]/20 text-slate-500'}`}>
-                      <th className="py-2.5 px-3 font-semibold">Course Code</th>
-                      <th className="py-2.5 px-3 font-semibold">Course Name</th>
-                      <th className="py-2.5 px-3 font-semibold">Credits</th>
-                      <th className="py-2.5 px-3 font-semibold">Grade</th>
-                      <th className="py-2.5 px-3 font-semibold">Category</th>
-                      <th className="py-2.5 px-3 text-right font-semibold">Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {courses.map((course) => (
-                      <tr key={course._id} className={`border-b transition-colors ${darkMode ? 'border-slate-800/50 hover:bg-slate-800/30 text-slate-300' : 'border-[#5B8DEF]/10 hover:bg-[#F2F7FC]/60 text-[#173B63]'}`}>
-                        <td className={`py-3 px-3 font-semibold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>{course.code}</td>
-                        <td className={`py-3 px-3 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>{course.name}</td>
-                        <td className={`py-3 px-3 ${darkMode ? 'text-slate-300' : 'text-slate-700'}`}>{course.credits}</td>
-                        <td className="py-3 px-3 font-bold text-[#5B8DEF]">{course.grade}</td>
-                        <td className="py-3 px-3">
-                          <span className={`text-[11px] px-2.5 py-0.5 rounded-full font-medium ${darkMode ? 'bg-blue-950/80 text-blue-400 border border-blue-800/50' : 'bg-[#5B8DEF]/10 border border-[#5B8DEF]/30 text-[#5B8DEF]'}`}>{course.category}</span>
-                        </td>
-                        <td className="py-3 px-3 text-right">
-                          <button
-                            onClick={() => handleDeleteCourse(course._id)}
-                            className="text-slate-400 hover:text-rose-600 p-1 transition"
-                          >
-                            <Trash2 size={16} />
-                          </button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                {categorizedData.map((yearData) => (
+                  <div key={yearData.year} className={`p-5 rounded-2xl border shadow-sm space-y-4 ${darkMode ? 'bg-[#111827] border-[#1F293D]' : 'bg-white border-slate-200'}`}>
+                    
+                    {/* Year Header */}
+                    <div className="flex justify-between items-center border-b pb-3 border-slate-700/30">
+                      <div className="flex items-center space-x-2">
+                        <Calendar size={18} className="text-indigo-500" />
+                        <h4 className="font-bold text-sm">Year {yearData.year} Overview</h4>
+                      </div>
+                      <span className="text-xs font-bold px-2.5 py-1 rounded-lg bg-indigo-500/10 text-indigo-500 border border-indigo-500/20">
+                        Year GPA: {yearData.yearGPA}
+                      </span>
+                    </div>
+
+                    {/* Semesters inside Year */}
+                    <div className="space-y-2">
+                      {yearData.semesters.map((semData) => (
+                        <div 
+                          key={semData.sem}
+                          onClick={() => setSelectedFilter(`${yearData.year}-${semData.sem}`)}
+                          className={`p-3 rounded-xl border flex justify-between items-center cursor-pointer transition text-xs ${selectedFilter === `${yearData.year}-${semData.sem}` ? 'border-indigo-500 bg-indigo-500/10' : darkMode ? 'bg-[#151D2A] border-[#2D3748] hover:border-slate-600' : 'bg-[#F8FAFC] border-slate-200 hover:border-slate-300'}`}
+                        >
+                          <div>
+                            <span className="font-semibold block">Semester {semData.sem}</span>
+                            <span className="text-slate-400 text-[11px]">{semData.count} Subjects</span>
+                          </div>
+                          <div className="text-right flex items-center space-x-2">
+                            <div>
+                              <span className="text-slate-400 text-[10px] block">GPA</span>
+                              <span className="font-bold text-indigo-500 text-sm">{semData.gpa}</span>
+                            </div>
+                            <ChevronRight size={14} className="text-slate-400" />
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+
+                  </div>
+                ))}
               </div>
             )}
           </div>
+
+          {/* VISUAL ANALYTICS & COURSE LIST */}
+          <div className={`p-6 rounded-2xl border shadow-sm space-y-4 ${darkMode ? 'bg-[#111827] border-[#1F293D]' : 'bg-white border-slate-200'}`}>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 border-slate-700/30">
+              <div>
+                <h3 className="text-base font-bold">Grade Performance Analytics</h3>
+                <p className="text-xs text-slate-400">
+                  Showing performance for: <span className="font-bold text-indigo-500">{selectedFilter === 'ALL' ? 'All Semesters' : `Year ${selectedFilter.split('-')[0]} - Semester ${selectedFilter.split('-')[1]}`}</span>
+                </p>
+              </div>
+
+              {selectedFilter !== 'ALL' && (
+                <button
+                  onClick={() => setSelectedFilter('ALL')}
+                  className="text-xs text-indigo-500 hover:underline font-medium self-start sm:self-auto"
+                >
+                  Clear Filter (Show All)
+                </button>
+              )}
+            </div>
+
+            {/* Recharts Bar Display */}
+            {filteredCourses.length > 0 ? (
+              <div className="h-64 w-full pt-4">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={filteredCourses}>
+                    <XAxis dataKey="code" stroke="#94A3B8" fontSize={11} tickLine={false} />
+                    <YAxis domain={[0, 4]} stroke="#94A3B8" fontSize={11} tickLine={false} />
+                    <Tooltip 
+                      contentStyle={{ 
+                        backgroundColor: darkMode ? '#151D2A' : '#FFFFFF', 
+                        borderColor: '#2D3748', 
+                        borderRadius: '12px',
+                        fontSize: '12px' 
+                      }} 
+                    />
+                    <Bar dataKey="credits" radius={[8, 8, 0, 0]}>
+                      {filteredCourses.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={index % 2 === 0 ? '#6366F1' : '#3B82F6'} />
+                      ))}
+                    </Bar>
+                  </BarChart>
+                </ResponsiveContainer>
+              </div>
+            ) : (
+              <div className="text-center py-8 text-xs text-slate-400">
+                No subjects recorded for this selected semester filter.
+              </div>
+            )}
+          </div>
+
         </main>
       </div>
-
-      {/* Add Course Modal */}
-      {showModal && (
-        <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm flex items-center justify-center px-4 z-50">
-          <div className={`${darkMode ? 'bg-slate-900 border-slate-800 text-white' : 'bg-white border-[#5B8DEF]/30 text-[#173B63]'} w-full max-w-md rounded-2xl p-6 shadow-2xl`}>
-            <h3 className={`text-lg font-bold mb-4 ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>Add New Course</h3>
-            {error && <div className="mb-4 bg-rose-50 border border-rose-200 text-rose-600 p-3 rounded-xl text-xs">{error}</div>}
-            
-            <form onSubmit={handleAddCourse} className="space-y-3.5 text-sm">
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Course Code</label>
-                  <input
-                    type="text"
-                    name="code"
-                    required
-                    value={formData.code}
-                    onChange={handleChange}
-                    placeholder="EE3101"
-                    className={`w-full rounded-xl p-2 text-xs focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] focus:border-[#5B8DEF]'}`}
-                  />
-                </div>
-                <div>
-                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Course Name</label>
-                  <input
-                    type="text"
-                    name="name"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="Control Systems"
-                    className={`w-full rounded-xl p-2 text-xs focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] focus:border-[#5B8DEF]'}`}
-                  />
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Credits</label>
-                  <input
-                    type="number"
-                    name="credits"
-                    required
-                    min={1}
-                    max={6}
-                    value={formData.credits}
-                    onChange={handleChange}
-                    className={`w-full rounded-xl p-2 text-xs focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] focus:border-[#5B8DEF]'}`}
-                  />
-                </div>
-                <div>
-                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Grade</label>
-                  <select
-                    name="grade"
-                    value={formData.grade}
-                    onChange={handleChange}
-                    className={`w-full rounded-xl p-2 text-xs font-bold focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#5B8DEF] focus:border-[#5B8DEF]'}`}
-                  >
-                    <option value="A+" className={darkMode ? 'bg-slate-900' : 'bg-white'}>A+</option>
-                    <option value="A" className={darkMode ? 'bg-slate-900' : 'bg-white'}>A</option>
-                    <option value="A-" className={darkMode ? 'bg-slate-900' : 'bg-white'}>A-</option>
-                    <option value="B+" className={darkMode ? 'bg-slate-900' : 'bg-white'}>B+</option>
-                    <option value="B" className={darkMode ? 'bg-slate-900' : 'bg-white'}>B</option>
-                    <option value="B-" className={darkMode ? 'bg-slate-900' : 'bg-white'}>B-</option>
-                    <option value="C+" className={darkMode ? 'bg-slate-900' : 'bg-white'}>C+</option>
-                    <option value="C" className={darkMode ? 'bg-slate-900' : 'bg-white'}>C</option>
-                    <option value="C-" className={darkMode ? 'bg-slate-900' : 'bg-white'}>C-</option>
-                    <option value="E" className={darkMode ? 'bg-slate-900' : 'bg-white'}>E</option>
-                    <option value="F" className={darkMode ? 'bg-slate-900' : 'bg-white'}>F</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3">
-                <div>
-                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Category</label>
-                  <select
-                    name="category"
-                    value={formData.category}
-                    onChange={handleChange}
-                    className={`w-full rounded-xl p-2 text-xs focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] focus:border-[#5B8DEF]'}`}
-                  >
-                    <option value="Core" className={darkMode ? 'bg-slate-900' : 'bg-white'}>Core</option>
-                    <option value="Technical Electives" className={darkMode ? 'bg-slate-900' : 'bg-white'}>Technical Electives</option>
-                    <option value="General" className={darkMode ? 'bg-slate-900' : 'bg-white'}>General</option>
-                  </select>
-                </div>
-                <div>
-                  <label className={`block text-xs font-medium mb-1 ${darkMode ? 'text-slate-300' : 'text-slate-600'}`}>Semester</label>
-                  <select
-                    name="semester"
-                    value={formData.semester}
-                    onChange={handleChange}
-                    className={`w-full rounded-xl p-2 text-xs focus:outline-none ${darkMode ? 'bg-slate-800 border border-slate-700 text-white focus:border-blue-500' : 'bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] focus:border-[#5B8DEF]'}`}
-                  >
-                    <option value={1} className={darkMode ? 'bg-slate-900' : 'bg-white'}>Semester 1</option>
-                    <option value={2} className={darkMode ? 'bg-slate-900' : 'bg-white'}>Semester 2</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex justify-end space-x-2.5 pt-3">
-                <button
-                  type="button"
-                  onClick={() => setShowModal(false)}
-                  className={`px-3.5 py-2 border rounded-xl transition text-xs font-medium ${darkMode ? 'border-slate-700 text-slate-300 hover:bg-slate-800' : 'border-slate-300 text-slate-600 hover:bg-slate-100'}`}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 bg-[#5B8DEF] text-white font-medium rounded-xl hover:bg-[#4975d1] transition shadow-sm text-xs"
-                >
-                  Save Course
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
     </div>
   );
 }
