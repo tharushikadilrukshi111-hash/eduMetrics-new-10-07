@@ -2,13 +2,15 @@ const express = require('express');
 const router = express.Router();
 const { registerUser, loginUser } = require('../controllers/authController');
 const authMiddleware = require('../middleware/authMiddleware');
+const User = require('../models/User');
 
+// Register Route
 router.post('/register', registerUser);
+
+// Login Route
 router.post('/login', loginUser);
 
-module.exports = router;
-
-
+// Profile Update Route
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
     const { name, university, department, year, semester } = req.body;
@@ -28,3 +30,6 @@ router.put('/profile', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
+
+
+module.exports = router;

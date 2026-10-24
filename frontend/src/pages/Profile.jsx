@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { User, Mail, School, BookOpen, Key, CheckCircle, AlertCircle, Save, Moon, Sun } from 'lucide-react';
+import { User, Mail, School, BookOpen, Key, CheckCircle, AlertCircle, Save, Moon, Sun, Camera } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import { useTheme } from '../context/ThemeContext';
 
@@ -11,6 +11,7 @@ export default function Profile() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
+    profilePic: '', // 👈 Profile Picture එක සඳහා එකතු කරන ලදී
     university: '',
     department: '',
     year: 3,
@@ -38,6 +39,7 @@ export default function Profile() {
       setFormData({
         name: parsedUser.name || '',
         email: parsedUser.email || '',
+        profilePic: parsedUser.profilePic || '', // 👈 Stored user ගෙන් profilePic එක ලබා ගැනීම
         university: parsedUser.university || 'University of Ruhuna',
         department: parsedUser.department || 'Computer Engineering',
         year: parsedUser.year || 3,
@@ -50,6 +52,18 @@ export default function Profile() {
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // 👈 Image එක Select කළ විට එය Base64 බවට හරවන Function එක
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setFormData({ ...formData, profilePic: reader.result });
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   const handleUpdateProfile = async (e) => {
@@ -67,6 +81,7 @@ export default function Profile() {
       const updatedUser = res.data.user || {
         ...user,
         name: formData.name,
+        profilePic: formData.profilePic, // 👈 Updated profilePic එක සේව් කිරීම
         university: formData.university,
         department: formData.department,
         year: formData.year,
@@ -83,6 +98,7 @@ export default function Profile() {
       const updatedUser = {
         ...user,
         name: formData.name,
+        profilePic: formData.profilePic, // 👈 Local fallback සඳහාත් එකතු කරන ලදී
         university: formData.university,
         department: formData.department,
         year: Number(formData.year),
@@ -135,8 +151,13 @@ export default function Profile() {
           <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} p-6 rounded-2xl border shadow-sm transition-colors duration-300`}>
             <div className="flex justify-between items-center mb-6 border-b pb-4 border-slate-700/40">
               <div className="flex items-center space-x-4">
-                <div className="w-14 h-14 rounded-2xl bg-[#5B8DEF] text-white flex items-center justify-center font-bold text-xl shadow-md">
-                  {user?.name ? user.name.charAt(0).toUpperCase() : 'S'}
+                {/* 👈 Profile Picture Preview or Initial Letter Avatar */}
+                <div className="w-14 h-14 rounded-2xl overflow-hidden bg-[#5B8DEF] text-white flex items-center justify-center font-bold text-xl shadow-md relative">
+                  {formData.profilePic ? (
+                    <img src={formData.profilePic} alt="Profile" className="w-full h-full object-cover" />
+                  ) : (
+                    user?.name ? user.name.charAt(0).toUpperCase() : 'S'
+                  )}
                 </div>
                 <div>
                   <h2 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>{user?.name || 'Student'}</h2>
@@ -154,6 +175,33 @@ export default function Profile() {
 
             {/* Profile Form */}
             <form onSubmit={handleUpdateProfile} className="space-y-5">
+              
+              {/* 👈 Edit Mode එකේදී පමණක් පෙනෙන Profile Picture Upload කොටස */}
+              {isEditing && (
+                <div className="p-4 rounded-xl border border-dashed border-slate-500/30 flex flex-col items-center justify-center space-y-3">
+                  <div className="w-20 h-20 rounded-full overflow-hidden bg-slate-200 border-2 border-[#5B8DEF] flex items-center justify-center shadow-inner">
+                    {formData.profilePic ? (
+                      <img src={formData.profilePic} alt="Preview" className="w-full h-full object-cover" />
+                    ) : (
+                      <User size={32} className="text-slate-400" />
+                    )}
+                  </div>
+                  <div className="flex flex-col items-center">
+                    <label className="cursor-pointer flex items-center space-x-2 px-4 py-2 bg-[#5B8DEF]/10 hover:bg-[#5B8DEF]/20 text-[#5B8DEF] rounded-xl text-xs font-medium transition">
+                      <Camera size={14} />
+                      <span>Upload New Picture</span>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        onChange={handleImageChange} 
+                        className="hidden" 
+                      />
+                    </label>
+                    <span className="text-[10px] text-slate-400 mt-1">Supports PNG, JPG, JPEG</span>
+                  </div>
+                </div>
+              )}
+
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
                 <div>
                   <label className="block text-slate-400 mb-1.5 font-medium">Full Name</label>

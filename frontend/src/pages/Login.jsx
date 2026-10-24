@@ -26,22 +26,7 @@ export default function Login() {
       localStorage.setItem('user', JSON.stringify(res.data.user));
       navigate('/dashboard');
     } catch (err) {
-      // Demo Fallback for local testing if server is offline
-      if (formData.email && formData.password) {
-        const dummyUser = {
-          name: 'Tharushika Dilrukshi',
-          email: formData.email,
-          university: 'University of Ruhuna',
-          department: 'Computer Engineering',
-          year: 3,
-          semester: 1
-        };
-        localStorage.setItem('token', 'demo-jwt-token-12345');
-        localStorage.setItem('user', JSON.stringify(dummyUser));
-        navigate('/dashboard');
-      } else {
-        setError(err.response?.data?.message || 'Invalid email or password');
-      }
+      setError(err.response?.data?.message || 'Invalid email or password');
     } finally {
       setLoading(false);
     }

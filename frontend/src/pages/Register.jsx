@@ -31,18 +31,18 @@ export default function Register() {
 
     try {
       const res = await axios.post('http://localhost:5000/api/auth/register', formData);
-      localStorage.setItem('token', res.data.token);
-      localStorage.setItem('user', JSON.stringify(res.data.user));
-      navigate('/dashboard');
-    } catch (err) {
-      // Demo Fallback
-      if (formData.name && formData.email) {
-        localStorage.setItem('token', 'demo-jwt-token-12345');
-        localStorage.setItem('user', JSON.stringify(formData));
+      
+      // Register වූ පසු Token සහ User ඩේටා සේව් කර Dashboard වෙත යැවීම
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+        localStorage.setItem('user', JSON.stringify(res.data.user));
         navigate('/dashboard');
       } else {
-        setError(err.response?.data?.message || 'Registration failed');
+        // Token එක එන්නේ නැත්නම් Login page එකට යවන්න
+        navigate('/login');
       }
+    } catch (err) {
+      setError(err.response?.data?.message || 'Registration failed. Please try again.');
     } finally {
       setLoading(false);
     }

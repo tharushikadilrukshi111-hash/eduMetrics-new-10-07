@@ -4,6 +4,7 @@ const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
   password: { type: String, required: true },
+  profilePic: {type: String, default: ''},
   university: { type: String, default: 'University of Ruhuna' },
   department: { type: String, default: 'Computer Engineering' },
   year: { type: Number, required: true },
