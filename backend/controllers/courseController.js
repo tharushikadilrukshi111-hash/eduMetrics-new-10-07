@@ -1,6 +1,5 @@
 const Course = require('../models/Course');
 
-
 const getGradePoint = (grade) => {
   switch (grade) {
     case 'A+': case 'A': return 4.00;
@@ -21,7 +20,7 @@ const addCourse = async (req, res) => {
     const gradePoint = getGradePoint(grade);
 
     const newCourse = new Course({
-      student: req.user.id, // Auth middleware eken ena user id eka
+      student: req.user.id,
       name,
       code,
       credits,
@@ -39,7 +38,6 @@ const addCourse = async (req, res) => {
   }
 };
 
-
 const getCourses = async (req, res) => {
   try {
     const courses = await Course.find({ student: req.user.id });
@@ -49,6 +47,27 @@ const getCourses = async (req, res) => {
   }
 };
 
+
+const updateCourse = async (req, res) => {
+  try {
+    const { name, code, credits, grade, semester, year, category } = req.body;
+    const gradePoint = getGradePoint(grade);
+
+    const updatedCourse = await Course.findOneAndUpdate(
+      { _id: req.params.id, student: req.user.id },
+      { name, code, credits, grade, gradePoint, semester, year, category },
+      { new: true, runValidators: true }
+    );
+
+    if (!updatedCourse) {
+      return res.status(404).json({ message: 'Course not found' });
+    }
+
+    res.status(200).json({ message: 'Course updated successfully', course: updatedCourse });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};
 
 const deleteCourse = async (req, res) => {
   try {
@@ -62,4 +81,5 @@ const deleteCourse = async (req, res) => {
   }
 };
 
-module.exports = { addCourse, getCourses, deleteCourse };
+
+module.exports = { addCourse, getCourses, updateCourse, deleteCourse };
