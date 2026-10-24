@@ -1,6 +1,6 @@
 const Course = require('../models/Course');
 
-// Helper function to map grades to grade points
+
 const getGradePoint = (grade) => {
   switch (grade) {
     case 'A+': case 'A': return 4.00;
@@ -15,7 +15,6 @@ const getGradePoint = (grade) => {
   }
 };
 
-// Add a new course
 const addCourse = async (req, res) => {
   try {
     const { name, code, credits, grade, semester, year, category } = req.body;
@@ -40,7 +39,7 @@ const addCourse = async (req, res) => {
   }
 };
 
-// Get all courses of logged-in student
+
 const getCourses = async (req, res) => {
   try {
     const courses = await Course.find({ student: req.user.id });
@@ -50,7 +49,7 @@ const getCourses = async (req, res) => {
   }
 };
 
-// Delete a course
+
 const deleteCourse = async (req, res) => {
   try {
     const course = await Course.findOneAndDelete({ _id: req.params.id, student: req.user.id });

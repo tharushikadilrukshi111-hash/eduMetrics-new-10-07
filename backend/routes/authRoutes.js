@@ -8,7 +8,7 @@ router.post('/login', loginUser);
 
 module.exports = router;
 
-//  Update user profile
+
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
     const { name, university, department, year, semester } = req.body;
