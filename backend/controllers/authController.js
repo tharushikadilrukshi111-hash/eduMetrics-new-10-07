@@ -22,7 +22,8 @@ const registerUser = async (req, res) => {
       university,
       department,
       year,
-      semester
+      semester,
+      profilePic: ''
     });
 
     await newUser.save();
@@ -63,7 +64,10 @@ const loginUser = async (req, res) => {
         name: user.name,
         email: user.email,
         year: user.year,
-        semester: user.semester
+        semester: user.semester,
+        university: user.university,
+        department: user.department,
+        profilePic: user.profilePic // 👈 මෙන්න මෙතැනට profilePic එක එකතු කර ඇත
       }
     });
   } catch (error) {

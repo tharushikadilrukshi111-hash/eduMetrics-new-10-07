@@ -11,7 +11,7 @@ export default function Profile() {
   const [formData, setFormData] = useState({
     name: '',
     email: '',
-    profilePic: '', // 👈 Profile Picture එක සඳහා එකතු කරන ලදී
+    profilePic: '',
     university: '',
     department: '',
     year: 3,
@@ -39,7 +39,7 @@ export default function Profile() {
       setFormData({
         name: parsedUser.name || '',
         email: parsedUser.email || '',
-        profilePic: parsedUser.profilePic || '', // 👈 Stored user ගෙන් profilePic එක ලබා ගැනීම
+        profilePic: parsedUser.profilePic || '',
         university: parsedUser.university || 'University of Ruhuna',
         department: parsedUser.department || 'Computer Engineering',
         year: parsedUser.year || 3,
@@ -54,7 +54,6 @@ export default function Profile() {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  // 👈 Image එක Select කළ විට එය Base64 බවට හරවන Function එක
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -72,16 +71,14 @@ export default function Profile() {
     setMessage({ type: '', text: '' });
 
     try {
-      // Backend API call to update user profile
-      const res = await axios.put('http://localhost:5000/api/users/profile', formData, {
+      const res = await axios.put('http://localhost:5000/api/auth/profile', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      // Update local storage and state
       const updatedUser = res.data.user || {
         ...user,
         name: formData.name,
-        profilePic: formData.profilePic, // 👈 Updated profilePic එක සේව් කිරීම
+        profilePic: formData.profilePic,
         university: formData.university,
         department: formData.department,
         year: formData.year,
@@ -94,11 +91,10 @@ export default function Profile() {
       setIsEditing(false);
       setFormData((prev) => ({ ...prev, currentPassword: '', newPassword: '' }));
     } catch (err) {
-      // Fallback update locally if backend route is not created yet
       const updatedUser = {
         ...user,
         name: formData.name,
-        profilePic: formData.profilePic, // 👈 Local fallback සඳහාත් එකතු කරන ලදී
+        profilePic: formData.profilePic,
         university: formData.university,
         department: formData.department,
         year: Number(formData.year),
@@ -118,7 +114,6 @@ export default function Profile() {
       <Sidebar />
 
       <div className="flex-1 flex flex-col min-w-0">
-        {/* Header */}
         <header className={`${darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-[#5B8DEF]/20'} backdrop-blur-xl border-b px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm transition-colors duration-300`}>
           <div>
             <h1 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>Student Profile</h1>
@@ -136,10 +131,7 @@ export default function Profile() {
           </div>
         </header>
 
-        {/* Profile Content */}
         <main className="p-6 md:p-8 max-w-4xl w-full mx-auto space-y-6">
-          
-          {/* Notification Alert */}
           {message.text && (
             <div className={`p-4 rounded-xl text-xs flex items-center space-x-2 border ${message.type === 'success' ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-500' : 'bg-rose-500/10 border-rose-500/30 text-rose-500'}`}>
               {message.type === 'success' ? <CheckCircle size={16} /> : <AlertCircle size={16} />}
@@ -147,11 +139,9 @@ export default function Profile() {
             </div>
           )}
 
-          {/* User Info Card */}
           <div className={`${darkMode ? 'bg-slate-900 border-slate-800' : 'bg-white border-[#5B8DEF]/20'} p-6 rounded-2xl border shadow-sm transition-colors duration-300`}>
             <div className="flex justify-between items-center mb-6 border-b pb-4 border-slate-700/40">
               <div className="flex items-center space-x-4">
-                {/* 👈 Profile Picture Preview or Initial Letter Avatar */}
                 <div className="w-14 h-14 rounded-2xl overflow-hidden bg-[#5B8DEF] text-white flex items-center justify-center font-bold text-xl shadow-md relative">
                   {formData.profilePic ? (
                     <img src={formData.profilePic} alt="Profile" className="w-full h-full object-cover" />
@@ -173,10 +163,7 @@ export default function Profile() {
               </button>
             </div>
 
-            {/* Profile Form */}
             <form onSubmit={handleUpdateProfile} className="space-y-5">
-              
-              {/* 👈 Edit Mode එකේදී පමණක් පෙනෙන Profile Picture Upload කොටස */}
               {isEditing && (
                 <div className="p-4 rounded-xl border border-dashed border-slate-500/30 flex flex-col items-center justify-center space-y-3">
                   <div className="w-20 h-20 rounded-full overflow-hidden bg-slate-200 border-2 border-[#5B8DEF] flex items-center justify-center shadow-inner">
@@ -292,7 +279,6 @@ export default function Profile() {
                 </div>
               </div>
 
-              {/* Security Section (Change Password) */}
               {isEditing && (
                 <div className="border-t pt-4 border-slate-700/40 space-y-3">
                   <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider">Change Password (Optional)</h4>
@@ -330,7 +316,6 @@ export default function Profile() {
                 </div>
               )}
 
-              {/* Save Button */}
               {isEditing && (
                 <div className="flex justify-end pt-2">
                   <button

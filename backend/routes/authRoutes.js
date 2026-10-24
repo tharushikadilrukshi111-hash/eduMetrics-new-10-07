@@ -13,11 +13,11 @@ router.post('/login', loginUser);
 // Profile Update Route
 router.put('/profile', authMiddleware, async (req, res) => {
   try {
-    const { name, university, department, year, semester } = req.body;
+    const { name, university, department, year, semester, profilePic } = req.body;
     
     const updatedUser = await User.findByIdAndUpdate(
       req.user.id,
-      { name, university, department, year, semester },
+      { name, university, department, year, semester, profilePic },
       { new: true, runValidators: true }
     ).select('-password');
 
@@ -30,6 +30,5 @@ router.put('/profile', authMiddleware, async (req, res) => {
     res.status(500).json({ message: 'Server error', error: err.message });
   }
 });
-
 
 module.exports = router;
