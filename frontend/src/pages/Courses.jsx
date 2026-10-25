@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import { BookOpen, PlusCircle, Trash2, Edit2, User, X } from 'lucide-react';
+import { BookOpen, PlusCircle, Trash2, Edit2, User, X, Search, SlidersHorizontal } from 'lucide-react';
 import Sidebar from '../components/Sidebar';
 import { useTheme } from '../context/ThemeContext';
 
@@ -10,6 +10,11 @@ export default function Courses() {
   const [user, setUser] = useState(null);
   const [showModal, setShowModal] = useState(false);
   const [editingCourseId, setEditingCourseId] = useState(null);
+  
+  // Search, Filter and Sort States
+  const [searchQuery, setSearchQuery] = useState('');
+  const [selectedSemester, setSelectedSemester] = useState('All');
+  const [sortBy, setSortBy] = useState('code');
   
   // Default course form data with Year and Semester
   const [formData, setFormData] = useState({
@@ -38,7 +43,7 @@ export default function Courses() {
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/courses', {
+      const res = await axios.get('http://edu-metrics-new-10-07.vercel.app/api/courses', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCourses(res.data);
@@ -80,12 +85,12 @@ export default function Courses() {
     try {
       if (editingCourseId) {
         // UPDATE (PUT) Course
-        await axios.put(`http://localhost:5000/api/courses/${editingCourseId}`, formData, {
+        await axios.put(`http://edu-metrics-new-10-07.vercel.app/api/courses/${editingCourseId}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       } else {
         // CREATE (POST) Course
-        await axios.post('http://localhost:5000/api/courses', formData, {
+        await axios.post('http://edu-metrics-new-10-07.vercel.app/api/courses', formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }
@@ -105,7 +110,7 @@ export default function Courses() {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this course?')) {
       try {
-        await axios.delete(`http://localhost:5000/api/courses/${id}`, {
+        await axios.delete(`http://edu-metrics-new-10-07.vercel.app/api/courses/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         fetchCourses();
@@ -114,6 +119,29 @@ export default function Courses() {
       }
     }
   };
+
+  // Filter and Sort Logic implementation
+  const filteredAndSortedCourses = courses
+    .filter((course) => {
+      const matchesSearch =
+        course.code.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        course.name.toLowerCase().includes(searchQuery.toLowerCase());
+
+      const matchesSemester =
+        selectedSemester === 'All' || String(course.semester) === String(selectedSemester);
+
+      return matchesSearch && matchesSemester;
+    })
+    .sort((a, b) => {
+      if (sortBy === 'code') {
+        return a.code.localeCompare(b.code);
+      } else if (sortBy === 'credits') {
+        return b.credits - a.credits;
+      } else if (sortBy === 'grade') {
+        return a.grade.localeCompare(b.grade);
+      }
+      return 0;
+    });
 
   return (
     <div className={`min-h-screen flex transition-colors duration-300 ${darkMode ? 'bg-[#0B0F19] text-slate-100' : 'bg-[#F8FAFC] text-slate-800'}`}>
@@ -142,10 +170,10 @@ export default function Courses() {
         {/* Content Card */}
         <main className="p-6 md:p-8 max-w-7xl w-full mx-auto space-y-6">
           <div className={`${darkMode ? 'bg-[#111827] border-[#1F293D]' : 'bg-white border-slate-200'} rounded-2xl shadow-sm p-6 border transition-colors duration-300`}>
-            <div className="flex justify-between items-center mb-6">
+            <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
               <div>
                 <h3 className="text-lg font-bold">Enrolled Courses</h3>
-                <p className="text-xs text-slate-400 mt-0.5">Total courses registered: {courses.length}</p>
+                <p className="text-xs text-slate-400 mt-0.5">Total courses registered: {courses.length} (Showing {filteredAndSortedCourses.length})</p>
               </div>
               <button
                 onClick={handleOpenAddModal}
@@ -156,14 +184,56 @@ export default function Courses() {
               </button>
             </div>
 
-            {courses.length === 0 ? (
+            {/* Search, Filter & Sort Controls Bar */}
+            <div className={`grid grid-cols-1 md:grid-cols-3 gap-3 p-4 rounded-xl border mb-6 ${darkMode ? 'bg-[#151D2A] border-[#2D3748]' : 'bg-slate-50 border-slate-200'}`}>
+              
+              {/* Search Bar */}
+              <div className="relative">
+                <Search className="absolute left-3 top-3 text-slate-400" size={16} />
+                <input
+                  type="text"
+                  placeholder="Search by code or name..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className={`w-full pl-9 pr-3 py-2 rounded-xl border text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 ${darkMode ? 'bg-[#111827] border-[#2D3748] text-white' : 'bg-white border-slate-200 text-slate-800'}`}
+                />
+              </div>
+
+              {/* Semester Filter */}
+              <div>
+                <select
+                  value={selectedSemester}
+                  onChange={(e) => setSelectedSemester(e.target.value)}
+                  className={`w-full p-2 rounded-xl border text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 ${darkMode ? 'bg-[#111827] border-[#2D3748] text-white' : 'bg-white border-slate-200 text-slate-800'}`}
+                >
+                  <option value="All">All Semesters</option>
+                  <option value="1">Semester 1</option>
+                  <option value="2">Semester 2</option>
+                </select>
+              </div>
+
+              {/* Sort By Dropdown */}
+              <div>
+                <select
+                  value={sortBy}
+                  onChange={(e) => setSortBy(e.target.value)}
+                  className={`w-full p-2 rounded-xl border text-xs focus:outline-none focus:ring-2 focus:ring-indigo-500 ${darkMode ? 'bg-[#111827] border-[#2D3748] text-white' : 'bg-white border-slate-200 text-slate-800'}`}
+                >
+                  <option value="code">Sort by Course Code</option>
+                  <option value="credits">Sort by Credits (High to Low)</option>
+                  <option value="grade">Sort by Grade</option>
+                </select>
+              </div>
+            </div>
+
+            {filteredAndSortedCourses.length === 0 ? (
               <div className="text-center py-12">
                 <BookOpen className="mx-auto text-slate-500 mb-3" size={40} />
-                <p className="text-slate-400 text-sm">No courses found. Click 'Add Course' to begin.</p>
+                <p className="text-slate-400 text-sm">No courses found matching your criteria.</p>
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                {courses.map((course) => (
+                {filteredAndSortedCourses.map((course) => (
                   <div key={course._id} className={`${darkMode ? 'bg-[#151D2A] border-[#2D3748]' : 'bg-[#F8FAFC] border-slate-200'} p-5 rounded-xl border shadow-sm flex flex-col justify-between space-y-4 transition-colors`}>
                     <div>
                       <div className="flex justify-between items-start mb-2">
@@ -195,7 +265,7 @@ export default function Courses() {
                       {/* Year & Semester Tag */}
                       <div className="flex items-center space-x-2 text-[11px] text-slate-400 mt-2">
                         <span className="px-2 py-0.5 rounded-md bg-slate-500/10 border border-slate-500/20 font-medium">
-                          Year {course.year || 3} - Sem {course.semester || 1}
+                          Year {course.year || 3} • Sem {course.semester || 1}
                         </span>
                         <span>•</span>
                         <span>{course.category || 'Core'}</span>

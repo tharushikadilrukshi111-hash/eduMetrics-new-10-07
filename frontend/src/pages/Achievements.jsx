@@ -25,7 +25,7 @@ export default function Achievements() {
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get('http://localhost:5000/api/courses', {
+      const res = await axios.get('http://edu-metrics-new-10-07.vercel.app/api/courses', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCourses(res.data);
