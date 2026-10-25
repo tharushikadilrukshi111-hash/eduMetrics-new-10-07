@@ -30,7 +30,7 @@ export default function Register() {
     setError('');
 
     try {
-      const res = await axios.post('http://edu-metrics-new-10-07.vercel.app/api/auth/register', formData);
+      const res = await axios.post('https://edu-metrics-new-10-07.vercel.app/api/auth/register', formData);
       
       // Register වූ පසු Token සහ User ඩේටා සේව් කර Dashboard වෙත යැවීම
       if (res.data.token) {

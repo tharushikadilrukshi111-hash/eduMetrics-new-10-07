@@ -21,7 +21,7 @@ export default function Login() {
     setError('');
 
     try {
-      const res = await axios.post('http://edu-metrics-new-10-07.vercel.app/api/auth/login', formData);
+      const res = await axios.post('https://edu-metrics-new-10-07.vercel.app/api/auth/login', formData);
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', JSON.stringify(res.data.user));
       navigate('/dashboard');

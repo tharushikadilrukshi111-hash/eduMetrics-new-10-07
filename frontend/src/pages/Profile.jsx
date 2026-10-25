@@ -71,7 +71,7 @@ export default function Profile() {
     setMessage({ type: '', text: '' });
 
     try {
-      const res = await axios.put('http://edu-metrics-new-10-07.vercel.app/api/auth/profile', formData, {
+      const res = await axios.put('https://edu-metrics-new-10-07.vercel.app/api/auth/profile', formData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
