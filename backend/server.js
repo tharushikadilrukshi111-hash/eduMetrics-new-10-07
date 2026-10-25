@@ -10,6 +10,7 @@ app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(cors());
 
+// Routes
 app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/courses', require('./routes/courseRoutes'));
 
@@ -18,7 +19,6 @@ app.get('/', (req, res) => {
     message: 'EduMetrics API is running!'
   });
 });
-
 
 app.get('/api/health', (req, res) => {
   const isConnected = mongoose.connection.readyState === 1;
@@ -29,10 +29,10 @@ app.get('/api/health', (req, res) => {
   });
 });
 
-
 const MONGO_URI = process.env.MONGO_URI;
 const PORT = process.env.PORT || 5000;
 
+// MongoDB Database Connection සහ Local Server එක Start වීම
 if (!MONGO_URI) {
   console.error('MONGO_URI environment variable is missing.');
 } else {
@@ -50,5 +50,3 @@ if (!MONGO_URI) {
       console.error('MongoDB connection error:', err.message);
     });
 }
-
-module.exports = app;

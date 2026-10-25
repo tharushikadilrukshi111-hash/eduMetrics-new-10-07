@@ -43,7 +43,7 @@ export default function Courses() {
 
   const fetchCourses = async () => {
     try {
-      const res = await axios.get('https://edu-metrics-new-10-07.vercel.app/api/courses', {
+      const res = await axios.get('http://localhost:5000/api/courses', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setCourses(res.data);
@@ -85,12 +85,12 @@ export default function Courses() {
     try {
       if (editingCourseId) {
         // UPDATE (PUT) Course
-        await axios.put(`https://edu-metrics-new-10-07.vercel.app/api/courses/${editingCourseId}`, formData, {
+        await axios.put(`http://localhost:5000/api/courses/${editingCourseId}`, formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       } else {
         // CREATE (POST) Course
-        await axios.post('https://edu-metrics-new-10-07.vercel.app/api/courses', formData, {
+        await axios.post('http://localhost:5000/api/courses', formData, {
           headers: { Authorization: `Bearer ${token}` }
         });
       }
@@ -110,7 +110,7 @@ export default function Courses() {
   const handleDelete = async (id) => {
     if (window.confirm('Are you sure you want to delete this course?')) {
       try {
-        await axios.delete(`https://edu-metrics-new-10-07.vercel.app/api/courses/${id}`, {
+        await axios.delete(`http://localhost:5000/api/courses/${id}`, {
           headers: { Authorization: `Bearer ${token}` }
         });
         fetchCourses();

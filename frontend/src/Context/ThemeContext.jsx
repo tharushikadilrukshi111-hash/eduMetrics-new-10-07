@@ -28,5 +28,12 @@ export function ThemeProvider({ children }) {
 }
 
 export function useTheme() {
-  return useContext(ThemeContext);
+  const context = useContext(ThemeContext);
+  
+ 
+  if (!context) {
+    return { darkMode: false, toggleDarkMode: () => {} };
+  }
+  
+  return context;
 }
