@@ -69,7 +69,7 @@ html.dark p, html.dark span, html.dark label, html.dark td, html.dark th {
 html.dark .text-slate-400,
 html.dark .text-slate-500,
 html.dark .text-slate-600,
-html.dark .text-[#173B63] {
+html.dark .text-blue-950 {
   color: #94A3B8 !important;
 }
 

@@ -42,7 +42,7 @@ export default function Settings() {
   };
 
   return (
-    <div className="min-h-screen bg-[#F2F7FC] text-[#173B63] flex">
+    <div className="min-h-screen bg-[#F2F7FC] text-blue-950 flex">
       {/* Left Sidebar */}
       <Sidebar />
 
@@ -52,14 +52,14 @@ export default function Settings() {
         {/* Top Header Bar */}
         <header className="bg-white/90 backdrop-blur-xl border-b border-[#5B8DEF]/20 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm">
           <div>
-            <h1 className="text-lg font-bold text-[#173B63]">Platform Settings</h1>
+            <h1 className="text-lg font-bold text-blue-950">Platform Settings</h1>
             <p className="text-xs text-slate-500">Manage your appearance, notifications, and data preferences.</p>
           </div>
           
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate('/profile')}
-              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
+              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-blue-950 px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
             >
               <User size={15} />
               <span>{user?.name || 'Student'}</span>
@@ -88,7 +88,7 @@ export default function Settings() {
                   <Bell size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#173B63]">Notification Preferences</h3>
+                  <h3 className="text-base font-bold text-blue-950">Notification Preferences</h3>
                   <p className="text-xs text-slate-500">Control what automated alerts you receive.</p>
                 </div>
               </div>
@@ -96,7 +96,7 @@ export default function Settings() {
               <div className="space-y-4 max-w-xl">
                 <div className="flex items-center justify-between bg-[#F2F7FC] border border-[#5B8DEF]/20 p-4 rounded-xl">
                   <div>
-                    <h4 className="text-xs font-bold text-[#173B63]">Email Notifications</h4>
+                    <h4 className="text-xs font-bold text-blue-950">Email Notifications</h4>
                     <p className="text-[11px] text-slate-500">Receive academic summaries and important notices via email.</p>
                   </div>
                   <input 
@@ -109,7 +109,7 @@ export default function Settings() {
 
                 <div className="flex items-center justify-between bg-[#F2F7FC] border border-[#5B8DEF]/20 p-4 rounded-xl">
                   <div>
-                    <h4 className="text-xs font-bold text-[#173B63]">Auto-Calculated Academic Alerts</h4>
+                    <h4 className="text-xs font-bold text-blue-950">Auto-Calculated Academic Alerts</h4>
                     <p className="text-[11px] text-slate-500">Get automatic GPA warnings & achievement notifications.</p>
                   </div>
                   <input 
@@ -129,7 +129,7 @@ export default function Settings() {
                   <Shield size={20} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#173B63]">Data & Records Management</h3>
+                  <h3 className="text-base font-bold text-blue-950">Data & Records Management</h3>
                   <p className="text-xs text-slate-500">Export or clear your local tracking information.</p>
                 </div>
               </div>
@@ -138,7 +138,7 @@ export default function Settings() {
                 <button
                   type="button"
                   onClick={handleExportData}
-                  className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] px-4 py-2 rounded-xl hover:bg-slate-100 transition text-xs font-medium"
+                  className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-blue-950 px-4 py-2 rounded-xl hover:bg-slate-100 transition text-xs font-medium"
                 >
                   <Download size={15} />
                   <span>Export Course Data</span>

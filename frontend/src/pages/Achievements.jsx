@@ -85,7 +85,7 @@ export default function Achievements() {
   ];
 
   return (
-    <div className="min-h-screen bg-[#F2F7FC] text-[#173B63] flex">
+    <div className="min-h-screen bg-[#F2F7FC] text-blue-950 flex">
       {/* Left Sidebar */}
       <Sidebar />
 
@@ -95,14 +95,14 @@ export default function Achievements() {
         {/* Top Header Bar */}
         <header className="bg-white/90 backdrop-blur-xl border-b border-[#5B8DEF]/20 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm">
           <div>
-            <h1 className="text-lg font-bold text-[#173B63]">Achievements & Milestones</h1>
+            <h1 className="text-lg font-bold text-blue-950">Achievements & Milestones</h1>
             <p className="text-xs text-slate-500">Track your academic badges, level progress, and streaks.</p>
           </div>
           
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate('/profile')}
-              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
+              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-blue-950 px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
             >
               <User size={15} />
               <span>{user?.name || 'Student'}</span>
@@ -129,7 +129,7 @@ export default function Achievements() {
               <div className="mt-4">
                 <div className="flex justify-between text-xs text-slate-500 mb-1">
                   <span>XP Progress</span>
-                  <span className="font-medium text-[#173B63]">{xpProgress} / 500 XP</span>
+                  <span className="font-medium text-blue-950">{xpProgress} / 500 XP</span>
                 </div>
                 <div className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/20 h-2.5 rounded-full overflow-hidden">
                   <div 
@@ -176,7 +176,7 @@ export default function Achievements() {
                 <Award size={24} />
               </div>
               <div>
-                <h3 className="text-base font-bold text-[#173B63]">Your Badges & Unlocks</h3>
+                <h3 className="text-base font-bold text-blue-950">Your Badges & Unlocks</h3>
                 <p className="text-xs text-slate-500">Badges are automatically unlocked based on your academic performance.</p>
               </div>
             </div>
@@ -206,7 +206,7 @@ export default function Achievements() {
                           {badge.unlocked ? 'Unlocked' : 'Locked'}
                         </span>
                       </div>
-                      <h4 className="font-bold text-[#173B63] text-base mb-1">{badge.title}</h4>
+                      <h4 className="font-bold text-blue-950 text-base mb-1">{badge.title}</h4>
                       <p className="text-xs text-slate-500 leading-relaxed">{badge.description}</p>
                     </div>
                   </div>
@@ -219,7 +219,7 @@ export default function Achievements() {
           <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-6">
             <div className="flex items-center space-x-2 mb-4">
               <Clock className="text-[#5B8DEF]" size={18} />
-              <h3 className="text-base font-bold text-[#173B63]">Recent Milestone Activity</h3>
+              <h3 className="text-base font-bold text-blue-950">Recent Milestone Activity</h3>
             </div>
             <div className="space-y-3">
               {recentHistory.map((item) => {
@@ -230,7 +230,7 @@ export default function Achievements() {
                       <div className={`p-2 rounded-lg bg-white border border-[#5B8DEF]/20 ${item.color}`}>
                         <ItemIcon size={16} />
                       </div>
-                      <span className="text-[#173B63] font-medium">{item.action}</span>
+                      <span className="text-blue-950 font-medium">{item.action}</span>
                     </div>
                     <span className="text-slate-500">{item.time}</span>
                   </div>

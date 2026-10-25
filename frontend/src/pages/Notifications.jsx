@@ -94,7 +94,7 @@ export default function Notifications() {
   const notifications = getAutoNotifications();
 
   return (
-    <div className="min-h-screen bg-[#F2F7FC] text-[#173B63] flex">
+    <div className="min-h-screen bg-[#F2F7FC] text-blue-950 flex">
       {/* Left Sidebar */}
       <Sidebar />
 
@@ -104,14 +104,14 @@ export default function Notifications() {
         {/* Top Header Bar */}
         <header className="bg-white/90 backdrop-blur-xl border-b border-[#5B8DEF]/20 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm">
           <div>
-            <h1 className="text-lg font-bold text-[#173B63]">Notifications</h1>
+            <h1 className="text-lg font-bold text-blue-950">Notifications</h1>
             <p className="text-xs text-slate-500">Automated system alerts and academic standing updates.</p>
           </div>
           
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate('/profile')}
-              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
+              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-blue-950 px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
             >
               <User size={15} />
               <span>{user?.name || 'Student'}</span>
@@ -129,7 +129,7 @@ export default function Notifications() {
                   <Bell size={22} />
                 </div>
                 <div>
-                  <h3 className="text-base font-bold text-[#173B63]">Live System & Academic Alerts</h3>
+                  <h3 className="text-base font-bold text-blue-950">Live System & Academic Alerts</h3>
                   <p className="text-xs text-slate-500">Generated automatically based on your database records & GPA</p>
                 </div>
               </div>
@@ -149,7 +149,7 @@ export default function Notifications() {
                     </div>
                     <div>
                       <div className="flex items-center space-x-2">
-                        <h4 className="font-bold text-[#173B63] text-sm">{item.title}</h4>
+                        <h4 className="font-bold text-blue-950 text-sm">{item.title}</h4>
                       </div>
                       <p className="text-xs text-slate-600 mt-1 leading-relaxed">{item.message}</p>
                       <span className="text-[11px] text-slate-400 mt-2 block">{item.time}</span>

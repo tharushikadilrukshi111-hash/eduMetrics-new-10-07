@@ -64,7 +64,7 @@ export default function Calculator() {
   const progressPercent = Math.min(100, Math.max(0, (simGPA / targetNum) * 100));
 
   return (
-    <div className="min-h-screen bg-[#F2F7FC] text-[#173B63] flex">
+    <div className="min-h-screen bg-[#F2F7FC] text-blue-950 flex">
       {/* Left Sidebar */}
       <Sidebar />
 
@@ -74,14 +74,14 @@ export default function Calculator() {
         {/* Top Header Bar */}
         <header className="bg-white/90 backdrop-blur-xl border-b border-[#5B8DEF]/20 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm">
           <div>
-            <h1 className="text-lg font-bold text-[#173B63]">GPA Calculator & Simulator</h1>
+            <h1 className="text-lg font-bold text-blue-950">GPA Calculator & Simulator</h1>
             <p className="text-xs text-slate-500">Plan your semester grades and estimate your GPA.</p>
           </div>
           
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate('/profile')}
-              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
+              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-blue-950 px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
             >
               <User size={15} />
               <span>{user?.name || 'Student'}</span>
@@ -120,7 +120,7 @@ export default function Calculator() {
               <div className="mt-3">
                 <div className="flex justify-between text-xs text-slate-500 mb-1">
                   <span>Progress to Target</span>
-                  <span className="font-medium text-[#173B63]">{progressPercent.toFixed(0)}%</span>
+                  <span className="font-medium text-blue-950">{progressPercent.toFixed(0)}%</span>
                 </div>
                 <div className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/20 h-2.5 rounded-full overflow-hidden">
                   <div 
@@ -135,7 +135,7 @@ export default function Calculator() {
           {/* Simulator Table Section */}
           <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-6">
             <div className="flex justify-between items-center mb-6">
-              <h3 className="text-base font-bold text-[#173B63]">GPA Simulation Table</h3>
+              <h3 className="text-base font-bold text-blue-950">GPA Simulation Table</h3>
               <button
                 onClick={handleAddRow}
                 className="flex items-center space-x-1.5 bg-[#5B8DEF] hover:bg-[#4975d1] text-white font-medium px-4 py-2 rounded-xl shadow-sm transition text-xs"
@@ -157,14 +157,14 @@ export default function Calculator() {
                 </thead>
                 <tbody>
                   {rows.map((row) => (
-                    <tr key={row.id} className="border-b border-[#5B8DEF]/10 text-[#173B63]">
+                    <tr key={row.id} className="border-b border-[#5B8DEF]/10 text-blue-950">
                       <td className="py-3 px-3">
                         <input 
                           type="text" 
                           value={row.code}
                           onChange={(e) => handleChange(row.id, 'code', e.target.value)}
                           placeholder="e.g. EC3201"
-                          className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-lg p-2 text-xs text-[#173B63] focus:outline-none focus:border-[#5B8DEF]"
+                          className="w-full bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-lg p-2 text-xs text-blue-950 focus:outline-none focus:border-[#5B8DEF]"
                         />
                       </td>
                       <td className="py-3 px-3">
@@ -174,7 +174,7 @@ export default function Calculator() {
                           max="6"
                           value={row.credits}
                           onChange={(e) => handleChange(row.id, 'credits', e.target.value)}
-                          className="w-20 bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-lg p-2 text-xs text-[#173B63] focus:outline-none focus:border-[#5B8DEF]"
+                          className="w-20 bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-lg p-2 text-xs text-blue-950 focus:outline-none focus:border-[#5B8DEF]"
                         />
                       </td>
                       <td className="py-3 px-3">
@@ -184,7 +184,7 @@ export default function Calculator() {
                           className="bg-[#F2F7FC] border border-[#5B8DEF]/30 rounded-lg p-2 text-xs text-[#5B8DEF] font-bold focus:outline-none focus:border-[#5B8DEF]"
                         >
                           {Object.keys(gradePoints).map(g => (
-                            <option key={g} value={g} className="bg-white text-[#173B63]">{g} ({gradePoints[g]})</option>
+                            <option key={g} value={g} className="bg-white text-blue-950">{g} ({gradePoints[g]})</option>
                           ))}
                         </select>
                       </td>

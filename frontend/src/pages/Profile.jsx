@@ -110,20 +110,20 @@ export default function Profile() {
   };
 
   return (
-    <div className={`min-h-screen flex transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-[#F2F7FC] text-[#173B63]'}`}>
+    <div className={`min-h-screen flex transition-colors duration-300 ${darkMode ? 'bg-slate-950 text-slate-100' : 'bg-[#F2F7FC] text-blue-950'}`}>
       <Sidebar />
 
       <div className="flex-1 flex flex-col min-w-0">
         <header className={`${darkMode ? 'bg-slate-900/90 border-slate-800' : 'bg-white/90 border-[#5B8DEF]/20'} backdrop-blur-xl border-b px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm transition-colors duration-300`}>
           <div>
-            <h1 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>Student Profile</h1>
+            <h1 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-blue-950'}`}>Student Profile</h1>
             <p className="text-xs text-slate-400">View and update your academic details.</p>
           </div>
 
           <div className="flex items-center space-x-3">
             <button
               onClick={toggleDarkMode}
-              className={`p-2 rounded-xl border transition shadow-sm ${darkMode ? 'bg-slate-800 border-slate-700 text-amber-400 hover:bg-slate-700' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63] hover:bg-slate-100'}`}
+              className={`p-2 rounded-xl border transition shadow-sm ${darkMode ? 'bg-slate-800 border-slate-700 text-amber-400 hover:bg-slate-700' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-blue-950 hover:bg-slate-100'}`}
               title="Toggle Dark/Light Mode"
             >
               {darkMode ? <Sun size={18} /> : <Moon size={18} />}
@@ -150,7 +150,7 @@ export default function Profile() {
                   )}
                 </div>
                 <div>
-                  <h2 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-[#173B63]'}`}>{user?.name || 'Student'}</h2>
+                  <h2 className={`text-lg font-bold ${darkMode ? 'text-white' : 'text-blue-950'}`}>{user?.name || 'Student'}</h2>
                   <p className="text-xs text-slate-400">{user?.email}</p>
                 </div>
               </div>
@@ -200,7 +200,7 @@ export default function Profile() {
                       disabled={!isEditing}
                       value={formData.name}
                       onChange={handleChange}
-                      className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
+                      className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-blue-950'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
                     />
                   </div>
                 </div>
@@ -228,7 +228,7 @@ export default function Profile() {
                       disabled={!isEditing}
                       value={formData.university}
                       onChange={handleChange}
-                      className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
+                      className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-blue-950'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
                     />
                   </div>
                 </div>
@@ -243,7 +243,7 @@ export default function Profile() {
                       disabled={!isEditing}
                       value={formData.department}
                       onChange={handleChange}
-                      className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
+                      className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-blue-950'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
                     />
                   </div>
                 </div>
@@ -255,7 +255,7 @@ export default function Profile() {
                     disabled={!isEditing}
                     value={formData.year}
                     onChange={handleChange}
-                    className={`w-full p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
+                    className={`w-full p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-blue-950'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
                   >
                     <option value={1}>1st Year</option>
                     <option value={2}>2nd Year</option>
@@ -271,7 +271,7 @@ export default function Profile() {
                     disabled={!isEditing}
                     value={formData.semester}
                     onChange={handleChange}
-                    className={`w-full p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
+                    className={`w-full p-2.5 rounded-xl border focus:outline-none transition ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-blue-950'} ${!isEditing && 'opacity-70 cursor-not-allowed'}`}
                   >
                     <option value={1}>Semester 1</option>
                     <option value={2}>Semester 2</option>
@@ -293,7 +293,7 @@ export default function Profile() {
                           value={formData.currentPassword}
                           onChange={handleChange}
                           placeholder="••••••••"
-                          className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'}`}
+                          className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-blue-950'}`}
                         />
                       </div>
                     </div>
@@ -308,7 +308,7 @@ export default function Profile() {
                           value={formData.newPassword}
                           onChange={handleChange}
                           placeholder="••••••••"
-                          className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-[#173B63]'}`}
+                          className={`w-full pl-9 p-2.5 rounded-xl border focus:outline-none ${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-[#F2F7FC] border-[#5B8DEF]/30 text-blue-950'}`}
                         />
                       </div>
                     </div>

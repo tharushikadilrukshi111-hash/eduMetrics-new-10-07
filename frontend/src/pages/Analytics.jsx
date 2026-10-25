@@ -58,7 +58,7 @@ export default function Analytics() {
   }));
 
   return (
-    <div className="min-h-screen bg-[#F2F7FC] text-[#173B63] flex">
+    <div className="min-h-screen bg-[#F2F7FC] text-blue-950 flex">
       {/* Left Sidebar */}
       <Sidebar />
 
@@ -68,14 +68,14 @@ export default function Analytics() {
         {/* Top Header Bar */}
         <header className="bg-white/90 backdrop-blur-xl border-b border-[#5B8DEF]/20 px-8 py-3.5 flex justify-between items-center sticky top-0 z-40 shadow-sm">
           <div>
-            <h1 className="text-lg font-bold text-[#173B63]">Academic Analytics</h1>
+            <h1 className="text-lg font-bold text-blue-950">Academic Analytics</h1>
             <p className="text-xs text-slate-500">Visualize your performance and progress.</p>
           </div>
           
           <div className="flex items-center space-x-3">
             <button
               onClick={() => navigate('/profile')}
-              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-[#173B63] px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
+              className="flex items-center space-x-2 bg-[#F2F7FC] border border-[#5B8DEF]/30 text-blue-950 px-3.5 py-1.5 rounded-xl hover:bg-slate-100 transition shadow-sm text-sm font-medium"
             >
               <User size={15} />
               <span>{user?.name || 'Tharushika Dilrukshi'}</span>
@@ -96,7 +96,7 @@ export default function Analytics() {
 
             <div className="bg-white border border-[#5B8DEF]/20 p-5 rounded-2xl shadow-sm">
               <p className="text-xs font-medium text-slate-500">Total Courses</p>
-              <h3 className="text-2xl font-extrabold text-[#173B63] mt-1">{courses.length}</h3>
+              <h3 className="text-2xl font-extrabold text-blue-950 mt-1">{courses.length}</h3>
               <p className="text-[11px] text-slate-400 mt-1">Enrolled subjects</p>
             </div>
 
@@ -111,7 +111,7 @@ export default function Analytics() {
           <div className="bg-white border border-[#5B8DEF]/20 rounded-2xl shadow-sm p-6">
             <div className="flex items-center space-x-2 mb-6">
               <BarChart2 className="text-[#5B8DEF]" size={20} />
-              <h3 className="text-base font-bold text-[#173B63]">Subject Performance Breakdown</h3>
+              <h3 className="text-base font-bold text-blue-950">Subject Performance Breakdown</h3>
             </div>
 
             {courses.length === 0 ? (
